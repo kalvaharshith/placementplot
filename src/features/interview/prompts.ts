@@ -59,7 +59,13 @@ ${conversationHistory}
 MODEL ANSWERS FOR REFERENCE:
 ${modelAnswers}
 
-TASK: Evaluate the candidate's performance and provide detailed feedback.
+GRADING CRITERIA & RULES:
+1. Be extremely strict and realistic. This is a simulation of real campus placements.
+2. If the candidate provides irrelevant, gibberish, single-letter, very short (e.g. less than 3 words), or empty answers (like "c", "kk", "ok", "yes", "i don't know"), you MUST score that specific question as 0 (zero) points.
+3. If the candidate answers most questions with nonsense or single-letter responses, the overallScore and all category scores (technicalAccuracy, communication, problemSolving, confidence) MUST be extremely low (e.g., between 0 and 5). Do NOT give a default passing or low score like 30-40 points for a blank or nonsensical performance.
+4. Compare the candidate's answer with the provided MODEL ANSWERS. Evaluate the depth, correctness, and logic.
+
+TASK: Evaluate the candidate's performance based on the above rules and provide detailed feedback.
 
 Return JSON:
 {
