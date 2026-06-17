@@ -147,7 +147,16 @@ async function handleMessageStream(body: {
           throw new Error("Local simulation required");
         }
 
-        const chat = createChatSession(systemPrompt, history);
+        // Adjust history: Gemini chat requires the first message to have the 'user' role.
+        let adjustedHistory = [...history];
+        if (adjustedHistory.length > 0 && adjustedHistory[0].role === "model") {
+          adjustedHistory.unshift({
+            role: "user",
+            parts: [{ text: "Hello, I am ready for the interview." }],
+          });
+        }
+
+        const chat = createChatSession(systemPrompt, adjustedHistory);
         const result = await chat.sendMessageStream(message);
         for await (const chunk of result.stream) {
           const text = chunk.text();
