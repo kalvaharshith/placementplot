@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import { jsonrepair } from "jsonrepair";
 
 // ─── Gemini Client ──────────────────────────────────────────────
 
@@ -80,6 +81,24 @@ export async function generateText(
   throw new Error("Failed after retries");
 }
 
+function cleanJsonString(str: string): string {
+  // Remove control characters that are invalid in JSON string values
+  // (ASCII 0-31 except tab \x09, line feed \x0A, carriage return \x0D)
+  let cleaned = str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "");
+  
+  // Use jsonrepair to fix structural formatting, missing quotes, single quotes, brackets, etc.
+  try {
+    cleaned = jsonrepair(cleaned);
+  } catch (repairErr: any) {
+    console.warn("jsonrepair was unable to repair string. Error:", repairErr.message);
+  }
+  
+  // Strip trailing commas before closing braces/brackets (as a fallback)
+  cleaned = cleaned.replace(/,(\s*[\]}])/g, "$1");
+  
+  return cleaned;
+}
+
 /**
  * Generate structured JSON output
  */
@@ -96,15 +115,22 @@ export async function generateJSON<T>(
     responseMimeType: "application/json",
   });
 
+  // Check if Gemini wrapped JSON in markdown code blocks
+  let jsonString = text;
+  const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  if (jsonMatch) {
+    jsonString = jsonMatch[1];
+  }
+
+  const cleaned = cleanJsonString(jsonString);
+
   try {
-    return JSON.parse(text) as T;
-  } catch {
-    // Sometimes Gemini wraps JSON in markdown code blocks
-    const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[1]) as T;
-    }
-    throw new Error(`Failed to parse Gemini response as JSON: ${text.substring(0, 200)}`);
+    return JSON.parse(cleaned) as T;
+  } catch (err: any) {
+    console.error("JSON parsing failed. Error:", err.message);
+    console.error("Raw text from Gemini:", text);
+    console.error("Cleaned text:", cleaned);
+    throw new Error(`Failed to parse Gemini response as JSON: ${err.message}. Raw sample: ${text.substring(0, 300)}`);
   }
 }
 
