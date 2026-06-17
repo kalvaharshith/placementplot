@@ -200,8 +200,8 @@ export default function DashboardLayout({
                 {item.icon}
                 {item.label}
                 {item.label === "Resume Analyzer" && (
-                  <span className="ml-auto text-[10px] font-bold bg-primary-500/20 text-primary-400 px-1.5 py-0.5 rounded">
-                    2 left
+                  <span className="ml-auto text-[10px] font-bold bg-success-500/20 text-success-400 px-1.5 py-0.5 rounded">
+                    Free
                   </span>
                 )}
               </Link>
