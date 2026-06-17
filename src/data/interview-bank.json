@@ -1,0 +1,26 @@
+[
+  {
+    "content": "Question: Can you explain the difference between a Stack and a Queue, and give a real-world example of each?\n\nModel Answer: A stack is a LIFO (Last In First Out) data structure where elements are added and removed from the same end (the top). A queue is a FIFO (First In First Out) data structure where elements are added at the rear (enqueue) and removed from the front (dequeue). \nReal-world examples:\n- Stack: The 'Undo' mechanism in text editors, or browser navigation history (back button).\n- Queue: A print queue managing documents sent to a printer, or a ticketing queue waiting for server requests.",
+    "metadata": { "company": "tcs", "role": "sde", "topic": "dsa", "difficulty": "easy" }
+  },
+  {
+    "content": "Question: What is normalization in databases, and why is it important?\n\nModel Answer: Database normalization is the process of organizing structured data to minimize redundancy and dependency. It involves dividing large tables into smaller tables and defining relationships between them according to normal forms (1NF, 2NF, 3NF, BCNF). Normalization is important because it prevents data anomalies (insert, update, delete anomalies), saves storage space, and ensures data consistency across the database.",
+    "metadata": { "company": "infosys", "role": "sde", "topic": "dbms", "difficulty": "medium" }
+  },
+  {
+    "content": "Question: Explain the difference between Method Overloading and Method Overriding in Object-Oriented Programming.\n\nModel Answer: \n- Method Overloading is a compile-time (static) polymorphism where multiple methods in the same class share the same name but have different parameter lists (different number, type, or order of parameters).\n- Method Overriding is a runtime (dynamic) polymorphism where a subclass provides a specific implementation for a method that is already defined in its parent class, using the exact same signature (name, parameters, and return type).",
+    "metadata": { "company": "wipro", "role": "sde", "topic": "oop", "difficulty": "easy" }
+  },
+  {
+    "content": "Question: Given a linked list, how do you detect if there is a cycle in it using O(1) auxiliary space?\n\nModel Answer: We use Floyd's Cycle-Finding Algorithm (also known as the Hare and Tortoise algorithm). We initialize two pointers, 'slow' and 'fast', at the head of the linked list. The slow pointer moves one step at a time, while the fast pointer moves two steps. If there is a cycle, the fast pointer will eventually catch up and meet the slow pointer. If the fast pointer reaches the end of the list (NULL), there is no cycle.\nTime Complexity: O(N) where N is the number of nodes.\nSpace Complexity: O(1) since we only use two pointers.",
+    "metadata": { "company": "google", "role": "sde", "topic": "dsa", "difficulty": "hard" }
+  },
+  {
+    "content": "Question: How does an API Gateway work in a Microservices architecture?\n\nModel Answer: An API Gateway acts as a reverse proxy and single entry point for all client requests. It routes client requests to the appropriate backend microservices, aggregates responses, performs authentication and authorization check, rate-limiting, load balancing, caching, metrics collection, and request/response transformations. This decouples client applications from the internal microservices structure.",
+    "metadata": { "company": "amazon", "role": "sde", "topic": "system_design", "difficulty": "hard" }
+  },
+  {
+    "content": "Question: Can you implement a function to check if a string of brackets is balanced (e.g., '{[()]}')?\n\nModel Answer: We can solve this using a Stack. Traverse the string character by character. If it is an opening bracket ('(', '{', '['), push it onto the stack. If it is a closing bracket, check if the stack is empty. If empty, the brackets are not balanced. Otherwise, pop the top of the stack and check if it matches the current closing bracket. If it matches, continue. If not, brackets are unbalanced. After traversing, if the stack is empty, return true; else return false.\nTime Complexity: O(N) where N is the length of the string.\nSpace Complexity: O(N) in the worst case for the stack.",
+    "metadata": { "company": "microsoft", "role": "sde", "topic": "dsa", "difficulty": "medium" }
+  }
+]
