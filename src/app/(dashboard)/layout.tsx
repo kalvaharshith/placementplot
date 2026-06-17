@@ -92,6 +92,7 @@ const baseNavItems = [
   { label: "Mock Interviews", href: "/dashboard/interview", icon: <ChatBubbleIcon /> },
   { label: "Companies", href: "/dashboard/companies", icon: <BuildingIcon /> },
   { label: "My Roadmap", href: "/dashboard/roadmap", icon: <MapIcon /> },
+  { label: "Billing & Plan", href: "/dashboard/billing", icon: <CreditCardIcon /> },
   { label: "Settings", href: "/dashboard/settings", icon: <SettingsIcon /> },
 ];
 
@@ -129,10 +130,11 @@ export default function DashboardLayout({
 
           if (profile) {
             setUserName(profile.name || user.email?.split("@")[0] || "User");
+            setUserTier(profile.tier === "premium" ? "Premium Plan" : "Free Plan");
           } else {
             setUserName(user.email?.split("@")[0] || "User");
+            setUserTier("Free Plan");
           }
-          setUserTier("Premium Plan"); // Force Premium for everyone for free promo
         }
       } catch (err) {
         console.error("Failed to load user info", err);

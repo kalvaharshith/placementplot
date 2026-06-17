@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PaymentButton from "@/features/payment/PaymentButton";
+import { supabase } from "@/lib/supabase";
 
 /* ───────── Plan Badge ───────── */
 function PlanBadge({ plan }: { plan: "free" | "premium" }) {
@@ -65,7 +66,7 @@ function UsageBar({
         {total === "unlimited"
           ? "Unlimited — Premium plan"
           : isLow
-          ? `⚠️ Only ${remaining} remaining — consider upgrading`
+          ? `⚠️ Only ${remaining} remaining — upgrade to unlock unlimited access`
           : `${remaining} remaining`}
       </p>
     </div>
@@ -113,20 +114,100 @@ function InvoiceRow({
   );
 }
 
-/* ───────── Main Page ───────── */
+/* ───────── Billing Page ───────── */
 export default function BillingPage() {
-  const [currentPlan] = useState<"free" | "premium">("premium");
+  const [currentPlan, setCurrentPlan] = useState<"free" | "premium">("free");
+  const [loading, setLoading] = useState(true);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-
-  // Mock usage data — replace with real Supabase data fetch
-  const usage = {
-    resumeUsed: 1,
+  const [usage, setUsage] = useState({
+    resumeUsed: 0,
     resumeTotal: 2,
     interviewUsed: 0,
     interviewTotal: 1,
+  });
+
+  const fetchBillingData = async () => {
+    try {
+      setLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // 1. Get user profile tier
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("tier")
+        .eq("id", user.id)
+        .single();
+
+      if (profile) {
+        setCurrentPlan(profile.tier === "premium" ? "premium" : "free");
+      }
+
+      // 2. Count active resumes
+      const { count: resumesCount } = await supabase
+        .from("resumes")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id);
+
+      // 3. Count active interviews
+      const { count: interviewsCount } = await supabase
+        .from("mock_interviews")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id);
+
+      setUsage({
+        resumeUsed: resumesCount || 0,
+        resumeTotal: 2,
+        interviewUsed: interviewsCount || 0,
+        interviewTotal: 1,
+      });
+    } catch (err) {
+      console.error("Failed to load billing stats:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBillingData();
+  }, []);
+
+  const handleCancelSubscription = async () => {
+    setShowCancelConfirm(false);
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({ tier: "free", resume_credits: 2, interview_credits: 1 })
+        .eq("id", user.id);
+
+      if (error) throw error;
+      setCurrentPlan("free");
+    } catch (err: any) {
+      console.error("Failed to cancel subscription:", err.message);
+      alert("Error canceling subscription. Please try again.");
+    } finally {
+      setLoading(false);
+      window.location.reload();
+    }
   };
 
   const isPremium = currentPlan === "premium";
+
+  if (loading) {
+    return (
+      <div className="min-h-[50vh] flex flex-col items-center justify-center text-center">
+        <svg className="w-8 h-8 text-primary-400 animate-spin" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-20" />
+          <path d="M12 2a10 10 0 019.95 9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+        </svg>
+        <p className="text-sm text-gray-500 mt-2">Loading billing account...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-fade-in max-w-4xl">
@@ -158,7 +239,7 @@ export default function BillingPage() {
               <div className="text-right">
                 <p className="text-2xl font-bold text-white">₹149</p>
                 <p className="text-xs text-gray-500">per month</p>
-                <p className="text-xs text-success-400 mt-1">Next billing: July 15, 2026</p>
+                <p className="text-xs text-success-400 mt-1">Active Premium</p>
               </div>
             ) : (
               <div className="text-right">
@@ -320,19 +401,7 @@ export default function BillingPage() {
         {isPremium ? (
           <div className="divide-y divide-white/5">
             <InvoiceRow
-              date="Jun 15, 2026"
-              description="Premium Plan — Monthly"
-              amount="₹149"
-              status="paid"
-            />
-            <InvoiceRow
-              date="May 15, 2026"
-              description="Premium Plan — Monthly"
-              amount="₹149"
-              status="paid"
-            />
-            <InvoiceRow
-              date="Apr 15, 2026"
+              date="Today"
               description="Premium Plan — Monthly"
               amount="₹149"
               status="paid"
@@ -374,7 +443,7 @@ export default function BillingPage() {
                 Keep Premium
               </button>
               <button
-                onClick={() => setShowCancelConfirm(false)}
+                onClick={handleCancelSubscription}
                 className="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-error-500/10 text-error-400 border border-error-500/20 hover:bg-error-500/20 transition-all"
               >
                 Yes, Cancel

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 interface PaymentButtonProps {
   itemType: "subscription" | "pack";
@@ -33,7 +34,14 @@ export default function PaymentButton({
   const handlePayment = async () => {
     setLoading(true);
     try {
-      // 1. Create order on Next.js backend
+      // 1. Get logged-in user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        alert("You must be logged in to purchase or upgrade.");
+        return;
+      }
+
+      // 2. Create order on Next.js backend
       const res = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -45,23 +53,22 @@ export default function PaymentButton({
         throw new Error(data.error || "Failed to create order");
       }
 
-      // 2. If backend returns mock checkout order, trigger mock checkout success
+      // 3. If backend returns mock checkout order, trigger sandbox testing modal
       if (data.isMock) {
         setLoading(false);
         setShowMockModal(true);
         return;
       }
 
-      // 3. Load Razorpay script
+      // 4. Load Razorpay script
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) {
-        // Fallback to mock modal if script failed to load
         setLoading(false);
-        setShowMockModal(true);
+        setShowMockModal(true); // Fallback to sandbox if loading failed
         return;
       }
 
-      // 4. Open Razorpay checkout options
+      // 5. Open real Razorpay checkout popup
       const options = {
         key: data.key,
         amount: data.amount,
@@ -72,47 +79,43 @@ export default function PaymentButton({
         handler: async function (response: any) {
           setLoading(true);
           try {
-            // Send mock payment capture event to local webhook for testing database update
-            await fetch("/api/payment/webhook", {
+            // Trigger server verification
+            const verifyRes = await fetch("/api/payment/verify", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                event: "payment.captured",
-                payload: {
-                  payment: {
-                    entity: {
-                      id: response.razorpay_payment_id,
-                      amount: data.amount,
-                      order_id: response.razorpay_order_id,
-                      notes: {
-                        type: itemType,
-                        userId: "mock-user-uuid-12345", // Simulated default user ID
-                      },
-                    },
-                  },
-                },
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                itemType,
+                packId,
               }),
             });
 
+            const verifyData = await verifyRes.json();
+            if (!verifyRes.ok || !verifyData.success) {
+              throw new Error(verifyData.error || "Payment verification failed");
+            }
+
             if (onSuccess) onSuccess(response.razorpay_payment_id);
-          } catch (e) {
+          } catch (e: any) {
             console.error("Capture trigger error:", e);
+            alert(`Payment verification failed: ${e.message}`);
           } finally {
             setLoading(false);
             window.location.reload(); // Refresh to update user tier state
           }
         },
         theme: {
-          color: "#3b82f6", // Matching premium brand color
+          color: "#3b82f6",
         },
       };
 
       const rzp = new (window as any).Razorpay(options);
       rzp.open();
-    } catch (err) {
-      console.error("Payment error:", err);
-      // Fallback
-      setShowMockModal(true);
+    } catch (err: any) {
+      console.error("Payment flow error:", err);
+      setShowMockModal(true); // Fallback to sandbox on unexpected errors
     } finally {
       setLoading(false);
     }
@@ -122,34 +125,37 @@ export default function PaymentButton({
     setShowMockModal(false);
     setLoading(true);
     try {
-      // Trigger update on profile in backend
-      const response = await fetch("/api/payment/webhook", {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Must be logged in to proceed.");
+
+      const mockOrderId = `order_mock_${Math.random().toString(36).substring(2, 12)}`;
+      const mockPaymentId = `pay_mock_${Math.random().toString(36).substring(2, 12)}`;
+
+      // Trigger verification backend in sandbox mock mode
+      const res = await fetch("/api/payment/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          event: "payment.captured",
-          payload: {
-            payment: {
-              entity: {
-                id: `pay_mock_${Math.random().toString(36).substring(2, 12)}`,
-                amount: itemType === "subscription" ? 14900 : 9900,
-                order_id: `order_mock_${Math.random().toString(36).substring(2, 12)}`,
-                notes: {
-                  type: itemType,
-                  userId: "mock-user-uuid-12345",
-                },
-              },
-            },
-          },
+          razorpay_order_id: mockOrderId,
+          razorpay_payment_id: mockPaymentId,
+          razorpay_signature: "mock_signature_bypass",
+          itemType,
+          packId,
         }),
       });
 
-      if (onSuccess) onSuccess("pay_mock_success");
-    } catch (e) {
-      console.error("Mock webhook fail:", e);
+      const verifyData = await res.json();
+      if (!res.ok || !verifyData.success) {
+        throw new Error(verifyData.error || "Mock verification failed");
+      }
+
+      if (onSuccess) onSuccess(mockPaymentId);
+    } catch (e: any) {
+      console.error("Mock verification failed:", e);
+      alert(`Simulation failed: ${e.message}`);
     } finally {
       setLoading(false);
-      window.location.reload(); // Refresh to update user tier state
+      window.location.reload(); // Refresh to update UI states
     }
   };
 
