@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 /* ───────── Roadmap Data ───────── */
 const roadmapWeeks = [
@@ -9,24 +10,24 @@ const roadmapWeeks = [
     title: "Foundations",
     focus: "Programming Basics & Aptitude",
     tasks: [
-      { task: "Complete arrays & strings fundamentals", type: "DSA", done: true, resource: "GeeksforGeeks" },
-      { task: "Solve 20 aptitude problems (Quantitative)", type: "Aptitude", done: true, resource: "IndiaBIX" },
-      { task: "Revise Time & Space complexity", type: "Theory", done: true, resource: "YouTube - Abdul Bari" },
-      { task: "Practice 5 TCS NQT-style problems", type: "Practice", done: true, resource: "PrepInsta" },
+      { task: "Complete arrays & strings fundamentals", type: "DSA", done: false, resource: "GeeksforGeeks" },
+      { task: "Solve 20 aptitude problems (Quantitative)", type: "Aptitude", done: false, resource: "IndiaBIX" },
+      { task: "Revise Time & Space complexity", type: "Theory", done: false, resource: "YouTube - Abdul Bari" },
+      { task: "Practice 5 TCS NQT-style problems", type: "Practice", done: false, resource: "PrepInsta" },
     ],
-    progress: 100,
+    progress: 0,
   },
   {
     week: 2,
     title: "Data Structures",
     focus: "Linked Lists, Stacks, Queues",
     tasks: [
-      { task: "Master linked list operations", type: "DSA", done: true, resource: "LeetCode" },
-      { task: "Implement stack & queue from scratch", type: "DSA", done: true, resource: "GeeksforGeeks" },
+      { task: "Master linked list operations", type: "DSA", done: false, resource: "LeetCode" },
+      { task: "Implement stack & queue from scratch", type: "DSA", done: false, resource: "GeeksforGeeks" },
       { task: "Solve 15 medium-level problems", type: "Practice", done: false, resource: "LeetCode" },
       { task: "Mock interview — Infosys pattern", type: "Interview", done: false, resource: "PlacementPlot AI" },
     ],
-    progress: 50,
+    progress: 0,
   },
   {
     week: 3,
@@ -64,6 +65,8 @@ const typeColors: Record<string, string> = {
 
 export default function RoadmapPage() {
   const [showSetup, setShowSetup] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [roadmapId, setRoadmapId] = useState<string | null>(null);
   
   // ─── API Setup Form States ───
   const [targetCompanies, setTargetCompanies] = useState<string[]>(["TCS", "Infosys"]);
@@ -77,22 +80,118 @@ export default function RoadmapPage() {
   const [error, setError] = useState<string | null>(null);
 
   // ─── Interactive Checklist State ───
-  const [completedTasks, setCompletedTasks] = useState<Record<string, boolean>>(() => {
-    const initial: Record<string, boolean> = {};
-    roadmapWeeks.forEach((week, wIdx) => {
-      week.tasks.forEach((task, tIdx) => {
-        if (task.done) {
-          initial[`${wIdx}-${tIdx}`] = true;
-        }
-      });
-    });
-    return initial;
-  });
+  const [completedTasks, setCompletedTasks] = useState<Record<string, boolean>>({});
 
   const toggleCompany = (c: string) => {
     setTargetCompanies((prev) =>
       prev.includes(c) ? prev.filter((item) => item !== c) : [...prev, c]
     );
+  };
+
+  const loadRoadmap = async () => {
+    try {
+      setLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("roadmap_plans")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("updated_at", { ascending: false })
+        .limit(1);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const plan = data[0];
+        setRoadmapId(plan.id);
+        setRoadmapData({
+          title: plan.target_companies && plan.target_companies.length > 0
+            ? `${plan.target_companies.join(" & ")} Prep Plan`
+            : "Your Placement Roadmap",
+          weeks: plan.weeks,
+        });
+        setTargetCompanies(plan.target_companies || ["TCS", "Infosys"]);
+        setSkillLevel(plan.skill_level || "Intermediate");
+        setAvailableHours(plan.available_hours || 15);
+        setTimelineMonths(plan.timeline_months || 3);
+
+        // Populate completed tasks from the loaded plan
+        const initial: Record<string, boolean> = {};
+        plan.weeks.forEach((week: any, wIdx: number) => {
+          week.tasks?.forEach((task: any, tIdx: number) => {
+            if (task.done) {
+              initial[`${wIdx}-${tIdx}`] = true;
+            }
+          });
+        });
+        setCompletedTasks(initial);
+      } else {
+        // No roadmap exists in DB yet. Initialize it with the default template,
+        // but set all default tasks' done status to false so they start fresh!
+        const defaultWeeks = roadmapWeeks.map((week) => ({
+          ...week,
+          tasks: (week.tasks || []).map((task) => ({ ...task, done: false })),
+          progress: 0,
+        }));
+
+        const { data: inserted, error: insertErr } = await supabase
+          .from("roadmap_plans")
+          .insert({
+            user_id: user.id,
+            target_companies: ["TCS", "Infosys"],
+            skill_level: "Intermediate",
+            available_hours: 15,
+            timeline_months: 3,
+            weeks: defaultWeeks,
+            progress: 0,
+          })
+          .select();
+
+        if (insertErr) throw insertErr;
+
+        if (inserted && inserted.length > 0) {
+          const plan = inserted[0];
+          setRoadmapId(plan.id);
+          setRoadmapData({
+            title: "TCS & Infosys Prep Plan",
+            weeks: plan.weeks,
+          });
+          setCompletedTasks({});
+        }
+      }
+    } catch (err) {
+      console.error("Error loading roadmap:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadRoadmap();
+  }, []);
+
+  const saveRoadmapState = async (updatedWeeks: any[], newProgress: number) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      if (roadmapId) {
+        const { error } = await supabase
+          .from("roadmap_plans")
+          .update({
+            weeks: updatedWeeks,
+            progress: newProgress,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", roadmapId);
+        
+        if (error) throw error;
+      }
+    } catch (err) {
+      console.error("Error saving roadmap:", err);
+    }
   };
 
   const generateRoadmap = async () => {
@@ -115,9 +214,59 @@ export default function RoadmapPage() {
         throw new Error(data.error || "Failed to generate roadmap.");
       }
 
-      setRoadmapData(data.roadmap);
+      const newRoadmapWeeks = (data.roadmap.weeks || []).map((week: any) => ({
+        ...week,
+        tasks: (week.tasks || []).map((task: any) => ({
+          ...task,
+          done: false, // Ensure they start unchecked
+        })),
+      }));
+
+      const finalRoadmap = {
+        ...data.roadmap,
+        weeks: newRoadmapWeeks,
+      };
+
+      setRoadmapData(finalRoadmap);
       setCompletedTasks({}); // Reset checkmarks
       setShowSetup(false);
+
+      // Save to Supabase DB
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        if (roadmapId) {
+          const { error: updateErr } = await supabase
+            .from("roadmap_plans")
+            .update({
+              target_companies: targetCompanies,
+              skill_level: skillLevel,
+              available_hours: availableHours,
+              timeline_months: timelineMonths,
+              weeks: newRoadmapWeeks,
+              progress: 0,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", roadmapId);
+          if (updateErr) throw updateErr;
+        } else {
+          const { data: inserted, error: insertErr } = await supabase
+            .from("roadmap_plans")
+            .insert({
+              user_id: user.id,
+              target_companies: targetCompanies,
+              skill_level: skillLevel,
+              available_hours: availableHours,
+              timeline_months: timelineMonths,
+              weeks: newRoadmapWeeks,
+              progress: 0,
+            })
+            .select();
+          if (insertErr) throw insertErr;
+          if (inserted && inserted.length > 0) {
+            setRoadmapId(inserted[0].id);
+          }
+        }
+      }
     } catch (err: any) {
       setError(err.message || "An error occurred generating your roadmap.");
     } finally {
@@ -140,13 +289,60 @@ export default function RoadmapPage() {
     ? Math.round((completedCount / totalTasksCount) * 100) 
     : 0;
 
-  const toggleTaskLocal = (weekIdx: number, taskIdx: number) => {
+  const toggleTaskLocal = async (weekIdx: number, taskIdx: number) => {
     const key = `${weekIdx}-${taskIdx}`;
-    setCompletedTasks((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+    const nextVal = !completedTasks[key];
+    
+    // Update local checkmarks map
+    const newCompletedTasks = {
+      ...completedTasks,
+      [key]: nextVal,
+    };
+    setCompletedTasks(newCompletedTasks);
+
+    // Update the done status of the task inside weeks array
+    const updatedWeeks = currentRoadmap.weeks.map((week: any, wIdx: number) => {
+      if (wIdx !== weekIdx) return week;
+      const updatedTasks = (week.tasks || []).map((task: any, tIdx: number) => {
+        if (tIdx !== taskIdx) return task;
+        return {
+          ...task,
+          done: nextVal,
+        };
+      });
+      return {
+        ...week,
+        tasks: updatedTasks,
+      };
+    });
+
+    setRoadmapData({
+      ...currentRoadmap,
+      weeks: updatedWeeks,
+    });
+
+    // Compute new progress percentage
+    const totalT = updatedWeeks.reduce((acc: number, w: any) => acc + (w.tasks?.length || 0), 0);
+    const completedT = Object.values(newCompletedTasks).filter(Boolean).length;
+    const progressPct = totalT > 0 ? Math.round((completedT / totalT) * 100) : 0;
+
+    // Save update to Supabase
+    await saveRoadmapState(updatedWeeks, progressPct);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center space-y-4 animate-fade-in">
+        <div className="w-16 h-16 rounded-full bg-primary-500/10 flex items-center justify-center text-primary-400">
+          <svg className="w-8 h-8 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-20" />
+            <path d="M12 2a10 10 0 019.95 9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+          </svg>
+        </div>
+        <h2 className="text-xl font-bold text-white font-sans">Loading placement plan...</h2>
+      </div>
+    );
+  }
 
   if (generating) {
     return (

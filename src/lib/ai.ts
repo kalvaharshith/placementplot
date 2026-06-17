@@ -50,9 +50,34 @@ export async function generateText(
     },
   });
 
-  const result = await model.generateContent(prompt);
-  const response = result.response;
-  return response.text();
+  let retries = 3;
+  let delay = 1000;
+  while (retries > 0) {
+    try {
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      return response.text();
+    } catch (err: any) {
+      retries--;
+      const status = err.status || (err.message && err.message.includes("503") ? 503 : 0);
+      const isTransient = status === 503 || status === 429 || 
+        (err.message && (
+          err.message.includes("demand") || 
+          err.message.includes("rate limit") || 
+          err.message.includes("exhausted") ||
+          err.message.includes("Service Unavailable") ||
+          err.message.includes("Too Many Requests")
+        ));
+      
+      if (retries === 0 || !isTransient) {
+        throw err;
+      }
+      console.warn(`Gemini generation transient error (status ${status}). Retrying in ${delay}ms... remaining retries: ${retries}`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      delay *= 2; // exponential backoff
+    }
+  }
+  throw new Error("Failed after retries");
 }
 
 /**
@@ -104,7 +129,37 @@ export async function* generateTextStream(
     },
   });
 
-  const result = await model.generateContentStream(prompt);
+  let result;
+  let retries = 3;
+  let delay = 1000;
+  while (retries > 0) {
+    try {
+      result = await model.generateContentStream(prompt);
+      break;
+    } catch (err: any) {
+      retries--;
+      const status = err.status || (err.message && err.message.includes("503") ? 503 : 0);
+      const isTransient = status === 503 || status === 429 || 
+        (err.message && (
+          err.message.includes("demand") || 
+          err.message.includes("rate limit") || 
+          err.message.includes("exhausted") ||
+          err.message.includes("Service Unavailable") ||
+          err.message.includes("Too Many Requests")
+        ));
+      
+      if (retries === 0 || !isTransient) {
+        throw err;
+      }
+      console.warn(`Gemini stream setup transient error (status ${status}). Retrying in ${delay}ms... remaining: ${retries}`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      delay *= 2;
+    }
+  }
+
+  if (!result) {
+    throw new Error("Failed to initialize stream after retries");
+  }
 
   for await (const chunk of result.stream) {
     const text = chunk.text();

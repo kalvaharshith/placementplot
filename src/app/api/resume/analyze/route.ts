@@ -34,11 +34,14 @@ interface ResumeAnalysisResult {
 // ─── POST /api/resume/analyze ──────────────────────────────────
 
 export async function POST(request: NextRequest) {
+  let resumeText = "";
+  let jobDescription: string | undefined = undefined;
+
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
-    let resumeText = formData.get("resumeText") as string;
-    const jobDescription = (formData.get("jobDescription") as string) || undefined;
+    resumeText = formData.get("resumeText") as string;
+    jobDescription = (formData.get("jobDescription") as string) || undefined;
 
     if (file) {
       const buffer = Buffer.from(await file.arrayBuffer());
@@ -111,11 +114,14 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Resume analysis error:", error);
 
-    // Fallback: generate without RAG if knowledge base isn't set up yet
+    // Fallback: generate without RAG if knowledge base isn't set up yet or fails
     try {
-      const formData = await request.clone().formData();
-      const resumeText = formData.get("resumeText") as string;
-      const jobDescription = (formData.get("jobDescription") as string) || undefined;
+      if (!resumeText || resumeText.trim().length < 50) {
+        return NextResponse.json(
+          { error: "Resume text/file is too short or invalid. Please provide at least 50 characters or a valid PDF." },
+          { status: 400 }
+        );
+      }
 
       const prompt = buildResumeAnalysisPrompt(
         resumeText,
@@ -135,6 +141,7 @@ export async function POST(request: NextRequest) {
         warning: "RAG context unavailable — using general AI analysis",
       });
     } catch (fallbackError) {
+      console.error("Fallback analysis error:", fallbackError);
       return NextResponse.json(
         { error: "Failed to analyze resume. Please try again later." },
         { status: 500 }

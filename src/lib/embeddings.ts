@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // ─── Embedding Model ───────────────────────────────────────────
 
-const EMBEDDING_MODEL = "gemini-embedding-001";
+const EMBEDDING_MODEL = "gemini-embedding-2";
 const EMBEDDING_DIMENSIONS = 3072;
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
@@ -44,7 +44,9 @@ export async function embedText(text: string): Promise<number[]> {
   if (cached) return cached;
 
   const model = genAI.getGenerativeModel({ model: EMBEDDING_MODEL });
-  const result = await model.embedContent(text);
+  const result = await model.embedContent({
+    content: { role: "user", parts: [{ text }] },
+  });
   const embedding = result.embedding.values;
 
   setCachedEmbedding(text, embedding);

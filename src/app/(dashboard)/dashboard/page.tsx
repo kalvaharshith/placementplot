@@ -338,7 +338,7 @@ export default function DashboardPage() {
                   </svg>
                 }
                 href="/dashboard/resume"
-                gradient="from-blue-500 to-cyan-500"
+                gradient="from-primary-500 to-accent-500"
                 tag="Free Active"
               />
               <ActionCard
@@ -350,7 +350,7 @@ export default function DashboardPage() {
                   </svg>
                 }
                 href="/dashboard/interview"
-                gradient="from-emerald-500 to-teal-500"
+                gradient="from-primary-500 to-accent-500"
               />
               <ActionCard
                 title="Browse Companies"
@@ -361,7 +361,7 @@ export default function DashboardPage() {
                   </svg>
                 }
                 href="/dashboard/companies"
-                gradient="from-amber-500 to-orange-500"
+                gradient="from-primary-500 to-accent-500"
                 tag="30+"
               />
               <ActionCard
@@ -373,7 +373,7 @@ export default function DashboardPage() {
                   </svg>
                 }
                 href="/dashboard/roadmap"
-                gradient="from-pink-500 to-rose-500"
+                gradient="from-primary-500 to-accent-500"
               />
             </div>
           </div>
