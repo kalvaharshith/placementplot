@@ -162,21 +162,19 @@ export default function ResumePage() {
       if (!res.ok) {
         let errorMsg = "Failed to analyze resume.";
         try {
-          // Attempt to parse JSON error response
-          const errorData = await res.json();
-          errorMsg = errorData.error || errorMsg;
-        } catch {
-          // Fallback if response is HTML (e.g. Next.js error pages or proxy blocks)
+          const text = await res.text();
           try {
-            const errorText = await res.text();
-            if (errorText.includes("413") || errorText.toLowerCase().includes("too large")) {
+            const errorData = JSON.parse(text);
+            errorMsg = errorData.error || errorMsg;
+          } catch {
+            if (text.includes("413") || text.toLowerCase().includes("too large")) {
               errorMsg = "The file is too large. Please upload a smaller PDF resume (under 4MB).";
             } else {
               errorMsg = `Server error (Status ${res.status}). Please try again later.`;
             }
-          } catch {
-            errorMsg = `Server returned an unexpected response (Status ${res.status}).`;
           }
+        } catch {
+          errorMsg = `Server returned an unexpected response (Status ${res.status}).`;
         }
         throw new Error(errorMsg);
       }

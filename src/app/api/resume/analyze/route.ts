@@ -6,7 +6,7 @@ import {
   buildResumeAnalysisPrompt,
 } from "@/features/resume/prompts";
 
-import { PDFParse } from "pdf-parse";
+import { extractText, getDocumentProxy } from "unpdf";
 
 // ─── Types ─────────────────────────────────────────────────────
 
@@ -45,10 +45,10 @@ export async function POST(request: NextRequest) {
 
     if (file) {
       const buffer = Buffer.from(await file.arrayBuffer());
-      const parser = new PDFParse({ data: buffer });
-      const textResult = await parser.getText();
-      resumeText = textResult.text;
-      await parser.destroy();
+      const uint8Array = new Uint8Array(buffer);
+      const pdf = await getDocumentProxy(uint8Array);
+      const { text } = await extractText(pdf, { mergePages: true });
+      resumeText = text;
     }
 
     if (!resumeText || resumeText.trim().length < 50) {
