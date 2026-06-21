@@ -52,8 +52,7 @@ async function handleStartInterviewStream(body: {
       "interview_bank",
       {
         topK: 15,
-        filters: { company: company.toLowerCase() },
-        contextHeader: `REAL ${company.toUpperCase()} INTERVIEW QUESTIONS:`,
+        contextHeader: `REAL ${company.toUpperCase()} AND RELATED INTERVIEW QUESTIONS:`,
       }
     );
     if (context) retrievedQuestions = context;
@@ -237,8 +236,7 @@ async function handleEvaluate(body: {
         questions.substring(0, 1000),
         "interview_bank",
         {
-          topK: 8,
-          filters: { company: company.toLowerCase() },
+          topK: 12,
           contextHeader: "MODEL ANSWERS FROM KNOWLEDGE BASE:",
         }
       );

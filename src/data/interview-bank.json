@@ -4,23 +4,103 @@
     "metadata": { "company": "tcs", "role": "sde", "topic": "dsa", "difficulty": "easy" }
   },
   {
+    "content": "Question: Write a function to check if a given string is a palindrome.\n\nModel Answer: A palindrome is a string that reads the same backward as forward. We can use a two-pointer approach. Initialize 'left' at index 0 and 'right' at length - 1. While left < right, check if the characters at left and right are equal (ignoring case/non-alphanumeric if needed). If they are not equal, return false. Otherwise, increment left and decrement right. If the loop completes, return true.\nTime Complexity: O(N) where N is the string length.\nSpace Complexity: O(1) as we only use two pointer variables.",
+    "metadata": { "company": "tcs", "role": "sde", "topic": "dsa", "difficulty": "easy" }
+  },
+  {
+    "content": "Question: What is the Software Development Life Cycle (SDLC), and what are its primary phases?\n\nModel Answer: SDLC is a structured process used by the software industry to design, develop, and test high-quality software. The primary phases are:\n1. Requirement Analysis: Gathering requirements from stakeholders.\n2. Design: Planning architecture, databases, and UI.\n3. Coding/Implementation: Writing the actual code.\n4. Testing: Verifying code behavior against requirements.\n5. Deployment: Releasing the software to production.\n6. Maintenance: Fixing bugs and updating software over time.",
+    "metadata": { "company": "tcs", "role": "sde", "topic": "software_engineering", "difficulty": "easy" }
+  },
+  {
     "content": "Question: What is normalization in databases, and why is it important?\n\nModel Answer: Database normalization is the process of organizing structured data to minimize redundancy and dependency. It involves dividing large tables into smaller tables and defining relationships between them according to normal forms (1NF, 2NF, 3NF, BCNF). Normalization is important because it prevents data anomalies (insert, update, delete anomalies), saves storage space, and ensures data consistency across the database.",
     "metadata": { "company": "infosys", "role": "sde", "topic": "dbms", "difficulty": "medium" }
+  },
+  {
+    "content": "Question: Explain the difference between primary key, unique key, and foreign key in SQL.\n\nModel Answer: \n- Primary Key: Uniquely identifies each row in a table. It cannot contain NULL values, and there can only be one primary key per table.\n- Unique Key: Ensures all values in a column are unique. Unlike primary key, it can accept a single NULL value, and there can be multiple unique keys in a table.\n- Foreign Key: A column or group of columns that references the primary key of another table. It establishes a link between tables and enforces referential integrity.",
+    "metadata": { "company": "infosys", "role": "sde", "topic": "dbms", "difficulty": "medium" }
+  },
+  {
+    "content": "Question: Write a program to print the first N Fibonacci numbers.\n\nModel Answer: The Fibonacci sequence starts with 0 and 1, and each subsequent number is the sum of the previous two. We can implement this iteratively using a loop. Initialize variables 'a' = 0 and 'b' = 1. Print 'a' and 'b'. Then loop from 2 to N, calculating the next term 'c' = 'a' + 'b', printing 'c', and updating 'a' = 'b' and 'b' = 'c'.\nTime Complexity: O(N) to print N numbers.\nSpace Complexity: O(1) auxiliary space.",
+    "metadata": { "company": "infosys", "role": "sde", "topic": "dsa", "difficulty": "easy" }
   },
   {
     "content": "Question: Explain the difference between Method Overloading and Method Overriding in Object-Oriented Programming.\n\nModel Answer: \n- Method Overloading is a compile-time (static) polymorphism where multiple methods in the same class share the same name but have different parameter lists (different number, type, or order of parameters).\n- Method Overriding is a runtime (dynamic) polymorphism where a subclass provides a specific implementation for a method that is already defined in its parent class, using the exact same signature (name, parameters, and return type).",
     "metadata": { "company": "wipro", "role": "sde", "topic": "oop", "difficulty": "easy" }
   },
   {
+    "content": "Question: What is exception handling, and how do try, catch, and finally blocks work?\n\nModel Answer: Exception handling is a mechanism to handle runtime errors so that the normal flow of the application is maintained. \n- 'try' block contains code that might throw an exception.\n- 'catch' block contains code to handle the thrown exception if it occurs.\n- 'finally' block contains code that ALWAYS executes after the try-catch blocks, regardless of whether an exception was thrown or handled, typically used for resource cleanup (closing database connections/files).",
+    "metadata": { "company": "wipro", "role": "sde", "topic": "oop", "difficulty": "easy" }
+  },
+  {
+    "content": "Question: What is an abstract class, and how does it differ from an interface?\n\nModel Answer: \n- Abstract Class: A class that cannot be instantiated and can contain both abstract methods (without body) and concrete methods (with body). It supports single inheritance.\n- Interface: A contract that specifies methods a class must implement. In modern OOP languages, it can contain default methods, but generally contains only abstract signatures. It supports multiple inheritance.\nKey difference: Use abstract class when services share a common identity/state; use interface to define a polymorphic role/behavior.",
+    "metadata": { "company": "wipro", "role": "sde", "topic": "oop", "difficulty": "medium" }
+  },
+  {
+    "content": "Question: Explain the difference between a clustered and a non-clustered index in database tables.\n\nModel Answer: \n- Clustered Index: Determines the physical order of data rows in the table. Because data is physically sorted, there can only be one clustered index per table (typically the Primary Key).\n- Non-Clustered Index: Creates a separate structure containing the sorted key columns and pointers (row locators) back to the actual data rows. You can have multiple non-clustered indexes on a table.",
+    "metadata": { "company": "cognizant", "role": "sde", "topic": "dbms", "difficulty": "medium" }
+  },
+  {
+    "content": "Question: Explain the differences between abstract classes and interfaces in Java/C++.\n\nModel Answer: Abstract classes can have instance variables, constructors, and concrete methods, whereas interfaces historically only had abstract methods and constants. A class can extend only one abstract class (single inheritance), but can implement multiple interfaces (multiple inheritance). Interfaces are used to define a common role/contract, while abstract classes are used to share code and state.",
+    "metadata": { "company": "cognizant", "role": "sde", "topic": "oop", "difficulty": "easy" }
+  },
+  {
+    "content": "Question: Describe the Agile methodology and Scrum framework.\n\nModel Answer: Agile is an iterative approach to software development and project management that helps teams deliver value to customers faster and with fewer headaches. Scrum is a specific Agile framework where work is broken down into small, time-boxed cycles called Sprints (usually 2-4 weeks). Scrum roles include Product Owner, Scrum Master, and Development Team, and includes events like Daily Standups, Sprint Planning, and Sprint Retrospectives.",
+    "metadata": { "company": "accenture", "role": "sde", "topic": "software_engineering", "difficulty": "easy" }
+  },
+  {
+    "content": "Question: Explain what RESTful APIs are and list the common HTTP methods used.\n\nModel Answer: REST (Representational State Transfer) is an architectural style for designing networked applications. It relies on a stateless, client-server protocol, usually HTTP. Common HTTP methods include:\n- GET: Retrieve a resource.\n- POST: Create a new resource.\n- PUT: Replace/update an existing resource entirely.\n- PATCH: Modify part of an existing resource.\n- DELETE: Remove a resource.",
+    "metadata": { "company": "capgemini", "role": "sde", "topic": "software_engineering", "difficulty": "easy" }
+  },
+  {
+    "content": "Question: Write an algorithm to perform Binary Search on a sorted array.\n\nModel Answer: Binary Search finds an element in a sorted array by repeatedly dividing the search interval in half. Initialize 'low' = 0 and 'high' = length - 1. While low <= high, calculate 'mid' = low + (high - low)/2. If array[mid] equals target, return mid. If array[mid] is less than target, set low = mid + 1. If array[mid] is greater than target, set high = mid - 1. If low > high, return -1.\nTime Complexity: O(log N)\nSpace Complexity: O(1)",
+    "metadata": { "company": "capgemini", "role": "sde", "topic": "dsa", "difficulty": "medium" }
+  },
+  {
     "content": "Question: Given a linked list, how do you detect if there is a cycle in it using O(1) auxiliary space?\n\nModel Answer: We use Floyd's Cycle-Finding Algorithm (also known as the Hare and Tortoise algorithm). We initialize two pointers, 'slow' and 'fast', at the head of the linked list. The slow pointer moves one step at a time, while the fast pointer moves two steps. If there is a cycle, the fast pointer will eventually catch up and meet the slow pointer. If the fast pointer reaches the end of the list (NULL), there is no cycle.\nTime Complexity: O(N) where N is the number of nodes.\nSpace Complexity: O(1) since we only use two pointers.",
     "metadata": { "company": "google", "role": "sde", "topic": "dsa", "difficulty": "hard" }
+  },
+  {
+    "content": "Question: Explain how you would design a URL Shortener like bit.ly.\n\nModel Answer: A URL shortener maps long URLs to short aliases. Key components:\n1. API Layer: REST endpoints for shortening (POST /shorten) and redirection (GET /{short_code}).\n2. Short Code Generation: Convert auto-incrementing ID to Base62 (a-z, A-Z, 0-9) to produce a 6-7 character string.\n3. Database: Relational (e.g., PostgreSQL) or NoSQL (e.g., MongoDB/DynamoDB) mapping short_code to original_url.\n4. Caching: Use Redis to cache popular short-code mappings for quick redirections.\n5. Scaling: Load balancers, read replicas for databases, and sharding by short_code hash.",
+    "metadata": { "company": "google", "role": "sde", "topic": "system_design", "difficulty": "hard" }
+  },
+  {
+    "content": "Question: How would you find the maximum path sum in a Binary Tree?\n\nModel Answer: We can solve this recursively. For each node, calculate the maximum path sum where it acts as the highest node (sum of node value, left child max path, and right child max path). The recursive function should return the maximum path sum starting from the node and going down at most one of its branches (node value + max(left path, right path, 0)). We update a global maximum variable with the max path sum at each step.\nTime Complexity: O(N) where N is the number of nodes.\nSpace Complexity: O(H) where H is the height of the tree (call stack).",
+    "metadata": { "company": "google", "role": "sde", "topic": "dsa", "difficulty": "hard" }
+  },
+  {
+    "content": "Question: Can you implement a function to check if a string of brackets is balanced (e.g., '{[()]}')?\n\nModel Answer: We can solve this using a Stack. Traverse the string character by character. If it is an opening bracket ('(', '{', '['), push it onto the stack. If it is a closing bracket, check if the stack is empty. If empty, the brackets are not balanced. Otherwise, pop the top of the stack and check if it matches the current closing bracket. If it matches, continue. If not, brackets are unbalanced. After traversing, if the stack is empty, return true; else return false.\nTime Complexity: O(N) where N is the length of the string.\nSpace Complexity: O(N) in the worst case for the stack.",
+    "metadata": { "company": "microsoft", "role": "sde", "topic": "dsa", "difficulty": "medium" }
+  },
+  {
+    "content": "Question: How would you design a parking lot system using Object-Oriented Design principles?\n\nModel Answer: I would define the following key classes:\n1. ParkingLot: Singleton class managing levels and entry/exit gates.\n2. Level: Represents each floor, containing a list of ParkingSpots.\n3. ParkingSpot: Abstract class with subclasses (CompactSpot, LargeSpot, MotorcycleSpot) to handle different vehicle sizes.\n4. Vehicle: Abstract class with subclasses (Car, Truck, Motorcycle).\n5. Ticket: Represents the entry record, storing entry time, slot number, and plate.\n6. Invoice: Represents the payment record, calculating fees based on hours parked.",
+    "metadata": { "company": "microsoft", "role": "sde", "topic": "oop", "difficulty": "medium" }
+  },
+  {
+    "content": "Question: How do you reverse words in a given string (e.g., 'the sky is blue' to 'blue is sky the')?\n\nModel Answer: We can solve this by:\n1. Splitting the string by whitespace into an array/list of words.\n2. Reversing the order of words in the array using a two-pointer swaps.\n3. Joining the reversed array of words back together with a single space separator.\nTime Complexity: O(N) where N is the string length.\nSpace Complexity: O(N) to store the split words.",
+    "metadata": { "company": "microsoft", "role": "sde", "topic": "dsa", "difficulty": "easy" }
   },
   {
     "content": "Question: How does an API Gateway work in a Microservices architecture?\n\nModel Answer: An API Gateway acts as a reverse proxy and single entry point for all client requests. It routes client requests to the appropriate backend microservices, aggregates responses, performs authentication and authorization check, rate-limiting, load balancing, caching, metrics collection, and request/response transformations. This decouples client applications from the internal microservices structure.",
     "metadata": { "company": "amazon", "role": "sde", "topic": "system_design", "difficulty": "hard" }
   },
   {
-    "content": "Question: Can you implement a function to check if a string of brackets is balanced (e.g., '{[()]}')?\n\nModel Answer: We can solve this using a Stack. Traverse the string character by character. If it is an opening bracket ('(', '{', '['), push it onto the stack. If it is a closing bracket, check if the stack is empty. If empty, the brackets are not balanced. Otherwise, pop the top of the stack and check if it matches the current closing bracket. If it matches, continue. If not, brackets are unbalanced. After traversing, if the stack is empty, return true; else return false.\nTime Complexity: O(N) where N is the length of the string.\nSpace Complexity: O(N) in the worst case for the stack.",
-    "metadata": { "company": "microsoft", "role": "sde", "topic": "dsa", "difficulty": "medium" }
+    "content": "Question: How would you implement an LRU (Least Recently Used) Cache?\n\nModel Answer: We can implement an LRU cache using a combination of a Doubly Linked List and a Hash Map.\n- Doubly Linked List: Stores the items in order of access. The head represents the most recently used, and the tail represents the least recently used.\n- Hash Map: Maps keys to nodes in the doubly linked list, enabling O(1) access to any node.\nWhen getting a key, move the node to the head of the list. When putting a key, if it exists, update value and move to head. If it is new, insert at head; if cache is at capacity, delete the tail node from both list and map.\nTime Complexity: O(1) for both get and put operations.",
+    "metadata": { "company": "amazon", "role": "sde", "topic": "dsa", "difficulty": "hard" }
+  },
+  {
+    "content": "Question: Explain the difference between SQL and NoSQL databases.\n\nModel Answer: \n- SQL (Relational): Data is stored in structured tables with fixed schemas. Good for complex queries, transactions, and strictly enforced ACID properties (e.g., PostgreSQL, MySQL).\n- NoSQL (Non-Relational): Data is stored as key-value, document, column-family, or graphs, with dynamic schemas. Highly scalable, optimized for high write loads and horizontal scaling (e.g., MongoDB, Redis, Cassandra).",
+    "metadata": { "company": "amazon", "role": "sde", "topic": "dbms", "difficulty": "medium" }
+  },
+  {
+    "content": "Question: How would you design a high-scale News Feed system like Facebook or Twitter?\n\nModel Answer: Key architectural components:\n1. Feed Generation: Use Fan-out-on-write (push model) where posts are pushed to followers' feed cache upon publishing, or Fan-out-on-read (pull model) for high-follower celebrities where feed is generated dynamically when a follower logs in.\n2. Caching: Redis clusters to cache user timelines and social graphs.\n3. CDN: Edge locations to cache media content (images/videos).\n4. Database: Graph database for follower mappings and NoSQL column-family (like Cassandra) to store posts.",
+    "metadata": { "company": "meta", "role": "sde", "topic": "system_design", "difficulty": "hard" }
+  },
+  {
+    "content": "Question: Write an algorithm to find the duplicate number in an array of size N+1 containing integers from 1 to N.\n\nModel Answer: We can solve this in O(N) time and O(1) space using Floyd's Tortoise and Hare algorithm (cycle detection). We treat the array values as pointers to indices: next_index = array[current_index]. Since there is a duplicate, a cycle will exist. Initialize slow = array[0] and fast = array[array[0]]. Move slow 1 step and fast 2 steps until they meet. Then reset fast to 0 and move both 1 step at a time. The point where they meet again is the duplicate element.\nTime Complexity: O(N)\nSpace Complexity: O(1)",
+    "metadata": { "company": "meta", "role": "sde", "topic": "dsa", "difficulty": "medium" }
+  },
+  {
+    "content": "Question: How does Quick Sort work, and what is its time complexity in the best, average, and worst cases?\n\nModel Answer: Quick Sort is a divide-and-conquer algorithm. It picks an element as a 'pivot' and partitions the array such that elements smaller than the pivot go to the left and larger elements go to the right. It then recursively sorts the left and right sub-arrays.\nTime Complexity:\n- Best Case: O(N log N) (when partition splits array in half).\n- Average Case: O(N log N).\n- Worst Case: O(N^2) (when pivot is consistently the smallest or largest element, e.g., already sorted array with naive pivot choice).",
+    "metadata": { "company": "adobe", "role": "sde", "topic": "dsa", "difficulty": "medium" }
   }
 ]
