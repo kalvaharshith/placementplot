@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# OneDrive conflicts
+*-DESKTOP-ASQ1KSG*

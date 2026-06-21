@@ -1,0 +1,26 @@
+[
+  {
+    "content": "ATS Formatting Standard: File Formats. Always submit resumes in PDF or DOCX formats. Avoid saving resumes as images (PNG, JPEG) or using scanned PDFs, as ATS parsers cannot read text from images without OCR. Clean text PDFs generated directly from Word or Google Docs are highly recommended.",
+    "metadata": { "category": "formatting", "rule_id": "file_format" }
+  },
+  {
+    "content": "ATS Structure Standard: Standard Section Headings. Use simple, standard section headings such as 'Work Experience', 'Professional Experience', 'Education', 'Projects', 'Skills', and 'Certifications'. Avoid creative titles like 'Where I've Been' or 'My Superpowers', as ATS parsers categorize information based on recognized heading keywords.",
+    "metadata": { "category": "structure", "rule_id": "section_headings" }
+  },
+  {
+    "content": "ATS Design Guideline: Avoid Tables, Columns, and Complex Elements. Do not use tables, text boxes, charts, graphics, or multi-column layouts. Many older ATS systems read left-to-right across the entire page, which scrambles content inside columns and tables, making the parsed text unreadable.",
+    "metadata": { "category": "formatting", "rule_id": "layout_elements" }
+  },
+  {
+    "content": "ATS Content Standard: Quantifiable Impact and the STAR/XYZ Formula. Every bullet point in the experience and projects sections should follow the STAR framework (Situation, Task, Action, Result) or the Google XYZ formula: 'Accomplished [X] as measured by [Y], by doing [Z]'. Resumes with quantified impact (percentages, dollar amounts, time saved, scale) score up to 40% higher.",
+    "metadata": { "category": "content", "rule_id": "quantifiable_impact" }
+  },
+  {
+    "content": "ATS Keyword Alignment: Hard Skills and Technologies. Parse the target Job Description to identify core technologies, programming languages, tools, and methodologies. Ensure these exact keywords are present in your 'Skills' section and naturally integrated into your experience descriptions. Abbreviations and full terms should both be included (e.g., 'API (Application Programming Interface)').",
+    "metadata": { "category": "keywords", "rule_id": "keyword_matching" }
+  },
+  {
+    "content": "ATS Resume Length and Font. For fresh graduates and candidates with under 5 years of experience, a single-page resume is optimal. Use clean, web-safe sans-serif fonts such as Arial, Calibri, Helvetica, or Garamond. Maintain a font size between 10pt and 12pt for body text, and 14pt to 16pt for headings.",
+    "metadata": { "category": "formatting", "rule_id": "length_font" }
+  }
+]

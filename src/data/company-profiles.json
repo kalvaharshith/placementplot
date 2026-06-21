@@ -1,0 +1,22 @@
+[
+  {
+    "content": "TCS (Tata Consultancy Services) Hiring Pattern: TCS hires primarily through TCS NQT (National Qualifier Test) or direct campus hiring. The exam contains sections on Aptitude, Reasoning, Verbal Ability, and Coding. Candidates who score well in NQT are invited for a Technical Interview, followed by an HR/Managerial Interview. TCS Ninja role offers ~3.6 LPA, while TCS Digital offers ~7.0 LPA. The coding questions usually focus on array manipulation, string algorithms, and basic logic.",
+    "metadata": { "company": "tcs", "tier": "Service", "ctc": "3.6 - 7.0 LPA", "difficulty": "Medium" }
+  },
+  {
+    "content": "Infosys Hiring Pattern: Infosys recruits freshers through InfyTQ, HackWithInfy, or off-campus drives. Roles include System Engineer (3.6 LPA), Specialist Programmer (9.5 LPA), and Digital Specialist Engineer (6.25 LPA). The recruitment process involves a programming test (Python/Java), followed by a technical interview focusing on DBMS, OOPs, OS, and SQL, and a final behavioral HR round.",
+    "metadata": { "company": "infosys", "tier": "Service", "ctc": "3.6 - 9.5 LPA", "difficulty": "Medium" }
+  },
+  {
+    "content": "Google Software Development Engineer (SDE) Hiring Pattern: Google's hiring process is highly competitive and consists of 1-2 initial phone screen rounds (DSA), followed by 4-5 virtual on-site rounds. The on-site rounds include 3-4 coding interviews testing advanced algorithms (Dynamic Programming, Graphs, Trees, System Design) and 1 'Googliness and Leadership' round. CTC ranges from 25 to 45+ LPA. The code must be clean, optimal in time and space complexity, and fully explained.",
+    "metadata": { "company": "google", "tier": "Product", "ctc": "25 - 45+ LPA", "difficulty": "Hard" }
+  },
+  {
+    "content": "Microsoft SDE Hiring Pattern: Microsoft's hiring process starts with an online coding assessment (codility) with 2-3 algorithmic problems. This is followed by 4 on-site technical interviews covering Data Structures, Algorithms, System Design, and Object-Oriented Design. CTC ranges from 20 to 40 LPA. Focus areas include Trees, Graphs, Strings, Arrays, and system architecture scalability.",
+    "metadata": { "company": "microsoft", "tier": "Product", "ctc": "20 - 40 LPA", "difficulty": "Hard" }
+  },
+  {
+    "content": "Amazon SDE Hiring Pattern: Amazon SDE interviews begin with an Online Assessment (OA) containing 2 coding questions and an assessment of Leadership Principles. It is followed by 3-4 rounds of technical interviews. Each interview starts with 15 minutes of Leadership Principle questions (STAR method behaviorals), followed by coding (Graphs, Trees, DP) or System Design questions. CTC is 22 to 42 LPA.",
+    "metadata": { "company": "amazon", "tier": "Product", "ctc": "22 - 42 LPA", "difficulty": "Hard" }
+  }
+]

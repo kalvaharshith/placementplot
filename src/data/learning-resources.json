@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Data Structures & Algorithms Course: Abdul Bari's Algorithms course on Udemy or YouTube is excellent for mastering time complexity analysis, recursion, divide-and-conquer, dynamic programming, and graph algorithms. This course is highly recommended for building solid foundational concepts.",
+    "metadata": { "topic": "dsa", "platform": "YouTube", "difficulty": "Beginner to Intermediate" }
+  },
+  {
+    "content": "DSA Practice Platform: LeetCode. Solve the 'LeetCode 75' or 'NeetCode 150' lists. Focus on patterns: Two Pointers, Sliding Window, Fast & Slow Pointers, Merge Intervals, Tree BFS/DFS, Graph BFS/DFS, and 1D/2D Dynamic Programming.",
+    "metadata": { "topic": "dsa", "platform": "LeetCode", "difficulty": "Intermediate to Hard" }
+  },
+  {
+    "content": "Aptitude & Logical Reasoning Preparation: IndiaBIX or PrepInsta. Practice Quantitative Aptitude (Time & Work, Speed & Distance, Percentages, Ratios) and Logical Reasoning daily for service company exams (TCS NQT, Infosys, Wipro).",
+    "metadata": { "topic": "aptitude", "platform": "IndiaBIX", "difficulty": "Easy to Medium" }
+  },
+  {
+    "content": "System Design: 'Designing Data-Intensive Applications' by Martin Kleppmann (book) and Alex Xu's System Design Interview (volumes 1 & 2). Crucial for Senior or Product SDE roles at Amazon, Google, Microsoft.",
+    "metadata": { "topic": "system_design", "platform": "Book", "difficulty": "Hard" }
+  },
+  {
+    "content": "SQL and Database Practice: LeetCode SQL 50 study plan and w3schools SQL tutorials. Focus on JOINs, GROUP BY, HAVING, subqueries, and window functions (ROW_NUMBER, DENSE_RANK), which are heavily tested by Infosys, TCS, and Amazon.",
+    "metadata": { "topic": "dbms", "platform": "LeetCode", "difficulty": "Medium" }
+  }
+]

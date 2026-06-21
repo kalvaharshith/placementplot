@@ -1,0 +1,26 @@
+[
+  {
+    "content": "Engineered a distributed real-time messaging pipeline using Next.js, Node.js, and Redis Pub/Sub, scaling daily message throughput by 150% and reducing end-to-end latency to less than 50ms for 50,000+ concurrent active connections.",
+    "metadata": { "role": "Software Engineer", "category": "backend", "framework": "STAR" }
+  },
+  {
+    "content": "Architected database schema optimization and query caching strategies in PostgreSQL and Redis, lowering median query latency by 40% and cutting infrastructure server CPU utilization from 78% to 32% under peak workloads.",
+    "metadata": { "role": "Backend Engineer", "category": "database", "framework": "XYZ" }
+  },
+  {
+    "content": "Spearheaded the redesign of the core dashboard interface using React, TailwindCSS, and Next.js App Router, resulting in a 35% improvement in Lighthouse performance scores and boosting user session duration by 22%.",
+    "metadata": { "role": "Frontend Engineer", "category": "frontend", "framework": "STAR" }
+  },
+  {
+    "content": "Automated CI/CD deployment pipelines on AWS using GitHub Actions, Docker, and Kubernetes (EKS), reducing deployment cycle time by 75% and achieving zero-downtime rollouts across 4 production services.",
+    "metadata": { "role": "DevOps Engineer", "category": "cloud", "framework": "XYZ" }
+  },
+  {
+    "content": "Designed and implemented a customizable dashboard component library using Radix UI and TypeScript, decreasing frontend developer onboarding time by 30% and standardizing visual styling across 3 micro-frontend applications.",
+    "metadata": { "role": "Frontend Engineer", "category": "design_system", "framework": "STAR" }
+  },
+  {
+    "content": "Refactored legacy Monolith architecture into Java Spring Boot microservices, improving system fault tolerance by isolating service failures and cutting overall AWS deployment billing cost by 18% via container right-sizing.",
+    "metadata": { "role": "SDE-2", "category": "architecture", "framework": "XYZ" }
+  }
+]
