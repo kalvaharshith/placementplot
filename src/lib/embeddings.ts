@@ -5,7 +5,10 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const EMBEDDING_MODEL = "gemini-embedding-2";
 const EMBEDDING_DIMENSIONS = 3072;
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+function getGenAI() {
+  const apiKey = process.env.GEMINI_API_KEY || "";
+  return new GoogleGenerativeAI(apiKey);
+}
 
 // ─── LRU Cache for repeated queries ────────────────────────────
 
@@ -43,14 +46,38 @@ export async function embedText(text: string): Promise<number[]> {
   const cached = getCachedEmbedding(text);
   if (cached) return cached;
 
-  const model = genAI.getGenerativeModel({ model: EMBEDDING_MODEL });
-  const result = await model.embedContent({
-    content: { role: "user", parts: [{ text }] },
-  });
-  const embedding = result.embedding.values;
-
-  setCachedEmbedding(text, embedding);
-  return embedding;
+  let retries = 3;
+  let delay = 1000;
+  while (retries > 0) {
+    try {
+      const model = getGenAI().getGenerativeModel({ model: EMBEDDING_MODEL });
+      const result = await model.embedContent({
+        content: { role: "user", parts: [{ text }] },
+      });
+      const embedding = result.embedding.values;
+      setCachedEmbedding(text, embedding);
+      return embedding;
+    } catch (err: any) {
+      retries--;
+      const status = err.status || (err.message && err.message.includes("503") ? 503 : 0);
+      const isTransient = status === 503 || status === 429 || 
+        (err.message && (
+          err.message.includes("demand") || 
+          err.message.includes("rate limit") || 
+          err.message.includes("exhausted") ||
+          err.message.includes("Service Unavailable") ||
+          err.message.includes("Too Many Requests")
+        ));
+      
+      if (retries === 0 || !isTransient) {
+        throw err;
+      }
+      console.warn(`Gemini embedding transient error (status ${status}). Retrying in ${delay}ms... remaining retries: ${retries}`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      delay *= 2; // exponential backoff
+    }
+  }
+  throw new Error("Failed after retries");
 }
 
 // ─── Batch Embedding ───────────────────────────────────────────
@@ -63,17 +90,47 @@ export async function embedBatch(
   texts: string[],
   batchSize = 100
 ): Promise<number[][]> {
-  const model = genAI.getGenerativeModel({ model: EMBEDDING_MODEL });
   const allEmbeddings: number[][] = [];
 
   for (let i = 0; i < texts.length; i += batchSize) {
     const batch = texts.slice(i, i + batchSize);
 
-    const result = await model.batchEmbedContents({
-      requests: batch.map((text) => ({
-        content: { role: "user", parts: [{ text }] },
-      })),
-    });
+    let result;
+    let retries = 3;
+    let delay = 1000;
+    while (retries > 0) {
+      try {
+        const model = getGenAI().getGenerativeModel({ model: EMBEDDING_MODEL });
+        result = await model.batchEmbedContents({
+          requests: batch.map((text) => ({
+            content: { role: "user", parts: [{ text }] },
+          })),
+        });
+        break;
+      } catch (err: any) {
+        retries--;
+        const status = err.status || (err.message && err.message.includes("503") ? 503 : 0);
+        const isTransient = status === 503 || status === 429 || 
+          (err.message && (
+            err.message.includes("demand") || 
+            err.message.includes("rate limit") || 
+            err.message.includes("exhausted") ||
+            err.message.includes("Service Unavailable") ||
+            err.message.includes("Too Many Requests")
+          ));
+        
+        if (retries === 0 || !isTransient) {
+          throw err;
+        }
+        console.warn(`Gemini batch embedding transient error (status ${status}). Retrying in ${delay}ms... remaining retries: ${retries}`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        delay *= 2;
+      }
+    }
+
+    if (!result) {
+      throw new Error("Failed to embed batch after retries");
+    }
 
     const embeddings = result.embeddings.map((e) => e.values);
     allEmbeddings.push(...embeddings);

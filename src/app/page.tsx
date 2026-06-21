@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 /* ───────── Animated Counter Hook ───────── */
 function useCountUp(end: number, duration = 2000, start = 0) {
   const [count, setCount] = useState(start);
-  const ref = useRef<HTMLSpanElement>(null);
+  const ref = useRef<HTMLParagraphElement>(null);
   const counted = useRef(false);
 
   useEffect(() => {

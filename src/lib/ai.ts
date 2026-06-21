@@ -3,7 +3,10 @@ import { jsonrepair } from "jsonrepair";
 
 // ─── Gemini Client ──────────────────────────────────────────────
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+function getGenAI() {
+  const apiKey = process.env.GEMINI_API_KEY || "";
+  return new GoogleGenerativeAI(apiKey);
+}
 
 // ─── Generation Models ─────────────────────────────────────────
 
@@ -40,7 +43,7 @@ export async function generateText(
     responseMimeType?: string;
   }
 ): Promise<string> {
-  const model = genAI.getGenerativeModel({
+  const model = getGenAI().getGenerativeModel({
     model: GENERATION_MODEL,
     safetySettings,
     systemInstruction: systemInstruction || undefined,
@@ -145,7 +148,7 @@ export async function* generateTextStream(
     maxOutputTokens?: number;
   }
 ): AsyncGenerator<string> {
-  const model = genAI.getGenerativeModel({
+  const model = getGenAI().getGenerativeModel({
     model: GENERATION_MODEL,
     safetySettings,
     systemInstruction: systemInstruction || undefined,
@@ -202,7 +205,7 @@ export function createChatSession(
   systemInstruction: string,
   history: { role: "user" | "model"; parts: { text: string }[] }[] = []
 ) {
-  const model = genAI.getGenerativeModel({
+  const model = getGenAI().getGenerativeModel({
     model: GENERATION_MODEL,
     safetySettings,
     systemInstruction,
