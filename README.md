@@ -14,7 +14,7 @@
 First, run the development server:
 ---
 # 🚀 Executive Summary
-**Placement Plot AI** is an enterprise-grade AI-powered SaaS career portal designed to optimize placement preparation for engineering candidates. By combining **Next.js**, **Supabase (PostgreSQL)**, and **Google Gemini API**, the system analyzes resumes, detects specific skill gaps against target company profiles, generates week-by-week personalized learning roadmaps, and conducts interactive mock interviews grounded in actual past interview transcripts using a custom-engineered **Hybrid Retrieval-Augmented Generation (RAG)** engine.
+Placement Plot AI is an enterprise-grade AI-powered SaaS career portal designed to optimize placement preparation for engineering candidates. By combining Next.js, Supabase (PostgreSQL), and Google Gemini API, the system analyzes resumes, detects specific skill gaps against target company profiles, generates week-by-week personalized learning roadmaps, and conducts interactive mock interviews grounded in actual past interview transcripts using a custom-engineered Hybrid Retrieval-Augmented Generation (RAG) engine.
 ---
 # 🌟 Product Demo & Interface Mockup
 Below is a conceptual layout of the Placement Plot AI dashboard, demonstrating the unified workspace, candidate analytics, interactive roadmaps, and the mock interview suite:
@@ -23,19 +23,19 @@ Below is a conceptual layout of the Placement Plot AI dashboard, demonstrating t
 </p>
 ---
 # 🌟 Key Highlights
-- ✅ **Next.js & Supabase Architecture:** Modern App Router layout with server-side rendering (SSR) and strict Postgres Row-Level Security (RLS).
-- ✅ **Hybrid RAG Engine:** Fuses vector cosine similarity metrics (using Gemini `text-embedding-004`) with keyword indexes (`tsvector`/`ts_rank`).
-- ✅ **Automated ATS Scoring:** Extracts candidate text (via `unpdf`) to score compatibility and map keyword gaps against specific job requirements.
-- ✅ **AI Interactivity & Dynamic Prompts:** Implements multi-turn mock interview agents that dynamically adjust follow-up lines based on candidate responses.
-- ✅ **Payment System Integration:** Processes secure payments and subscriptions via Razorpay, directly updating client resource credits.
-- ✅ **Structured JSON Outputs:** Employs schema validation rules to format raw LLM text into verified JSON objects for dashboard parsing.
+- ✅ Next.js & Supabase Architecture: Modern App Router layout with server-side rendering (SSR) and strict Postgres Row-Level Security (RLS).
+- ✅ Hybrid RAG Engine: Fuses vector cosine similarity metrics (using Gemini `text-embedding-004`) with keyword indexes (`tsvector`/`ts_rank`).
+- ✅ Automated ATS Scoring: Extracts candidate text (via `unpdf`) to score compatibility and map keyword gaps against specific job requirements.
+- ✅ AI Interactivity & Dynamic Prompts: Implements multi-turn mock interview agents that dynamically adjust follow-up lines based on candidate responses.
+- ✅ Payment System Integration: Processes secure payments and subscriptions via Razorpay, directly updating client resource credits.
+- ✅ Structured JSON Outputs: Employs schema validation rules to format raw LLM text into verified JSON objects for dashboard parsing.
 ---
 # 🎯 Problem Statement
 Traditional placement preparation systems are fragmented and present key challenges:
-- **One-Size-Fits-All Advice:** Students prepare using generic resources rather than targeted material matched to specific companies (e.g., Google vs. McKinsey).
-- **Expensive Coaching:** Getting professional resume reviews and realistic mock interviews is costly and non-scalable.
-- **Unquantified Progress:** Candidates struggle to evaluate formatting, find missing keywords, and track week-by-week progress metrics.
-- **Data Silos:** Placement preparation platforms rarely integrate learning materials, resumes, payments, and mock feedback in a single hub.
+- One-Size-Fits-All Advice: Students prepare using generic resources rather than targeted material matched to specific companies (e.g., Google vs. McKinsey).
+- Expensive Coaching: Getting professional resume reviews and realistic mock interviews is costly and non-scalable.
+- Unquantified Progress: Candidates struggle to evaluate formatting, find missing keywords, and track week-by-week progress metrics.
+- Data Silos: Placement preparation platforms rarely integrate learning materials, resumes, payments, and mock feedback in a single hub.
 ---
 # 🧩 Problem Landscape
 ```mermaid
@@ -125,7 +125,7 @@ sequenceDiagram
 ```
 ---
 # 📂 Database Schema Overview
-The database is built on PostgreSQL inside **Supabase**, utilizing `pgvector` for fast approximate nearest neighbor (ANN) similarity matching.
+The database is built on PostgreSQL inside Supabase, utilizing `pgvector` for fast approximate nearest neighbor (ANN) similarity matching.
 ### Database Tables
 | Table | Primary Key | Description | RLS Policy |
 |---|---|---|---|
@@ -137,8 +137,7 @@ The database is built on PostgreSQL inside **Supabase**, utilizing `pgvector` fo
 | `subscriptions` | `UUID` | Syncs Razorpay subscription plans, status, and renewal deadlines. | Owner Read/Write |
 ---
 # 🧮 Hybrid Search & Vector RAG Engine
-A custom PostgreSQL stored function `match_documents` fusions semantic vector distance and text ranking using a weighted score:
-$$\text{Combined Score} = (\text{Cosine Similarity} \times 0.7) + (\text{ts\_rank} \times 0.3)$$
+A custom PostgreSQL stored function `match_documents` fusions semantic vector distance and text ranking using a weighted score
 ```sql
 CREATE OR REPLACE FUNCTION match_documents(
   query_embedding VECTOR(768),
@@ -182,13 +181,13 @@ $$ LANGUAGE plpgsql;
 # 🛠️ Technology Stack
 | Layer | Technology | Description |
 |---|---|---|
-| **Frontend** | React 19, Next.js (App Router), Tailwind CSS v4, Lucide React | Clean, high-performance visual dashboard styling. |
-| **Backend** | Next.js Server Actions & API Routes, Node.js | Fast serverless routing and server component rendering. |
-| **Database** | Supabase, PostgreSQL | Secure Relational Database with real-time replication. |
-| **AI/ML Layer**| Google Gemini API (`text-embedding-004`), JSON constraints | Vector embeddings and structured generative evaluations. |
-| **Extensions** | pgvector (HNSW Index), GIN (jsonb_path_ops) | High-speed semantic similarity queries and JSON search. |
-| **Payments** | Razorpay Node SDK | Subscription billing webhook handler and credits updates. |
-| **Utilities** | unpdf, jsonrepair, uuid | Clean document extraction and reliable JSON parser fixes. |
+| Frontend | React 19, Next.js (App Router), Tailwind CSS v4, Lucide React | Clean, high-performance visual dashboard styling. |
+| Backend | Next.js Server Actions & API Routes, Node.js | Fast serverless routing and server component rendering. |
+| Database | Supabase, PostgreSQL | Secure Relational Database with real-time replication. |
+| AI/ML Layer| Google Gemini API (`text-embedding-004`), JSON constraints | Vector embeddings and structured generative evaluations. |
+| Extensions | pgvector (HNSW Index), GIN (jsonb_path_ops) | High-speed semantic similarity queries and JSON search. |
+| Payments | Razorpay Node SDK | Subscription billing webhook handler and credits updates. |
+| Utilities | unpdf, jsonrepair, uuid | Clean document extraction and reliable JSON parser fixes. |
 ---
 # 📁 Project Directory Tree
 ```bash
