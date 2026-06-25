@@ -154,6 +154,9 @@ async function handleMessageStream(body: {
       try {
         // Adjust history: Gemini chat requires the first message to have the 'user' role.
         let adjustedHistory = [...history];
+        if (adjustedHistory.length > 0 && adjustedHistory[adjustedHistory.length - 1].role === "user") {
+          adjustedHistory.pop();
+        }
         if (adjustedHistory.length > 0 && adjustedHistory[0].role === "model") {
           adjustedHistory.unshift({
             role: "user",
