@@ -117,12 +117,56 @@ export default function DashboardLayout({
 
         setUserEmail(user.email || "");
 
-        // Fetch name from profiles table
-        const { data: profile } = await supabase
+        // Fetch profile from profiles table
+        let { data: profile } = await supabase
           .from("profiles")
-          .select("name")
+          .select("name, college, year, branch, tier")
           .eq("id", user.id)
           .single();
+
+        // Sync metadata to profile if missing (self-healing/auto-sync)
+        if (profile) {
+          const needCollegeSync = !profile.college && user.user_metadata?.college;
+          const needYearSync = !profile.year && user.user_metadata?.year;
+          const needBranchSync = !profile.branch && user.user_metadata?.branch;
+
+          if (needCollegeSync || needYearSync || needBranchSync) {
+            const { data: updatedProfile } = await supabase
+              .from("profiles")
+              .update({
+                college: profile.college || user.user_metadata?.college || "",
+                year: profile.year || parseInt(user.user_metadata?.year || "0"),
+                branch: profile.branch || user.user_metadata?.branch || "",
+              })
+              .eq("id", user.id)
+              .select()
+              .single();
+            if (updatedProfile) {
+              profile = updatedProfile;
+            }
+          }
+        } else {
+          // Fallback: If no profile row exists, create it
+          const name = user.user_metadata?.name || user.user_metadata?.full_name || user.email?.split("@")[0] || "Student";
+          const college = user.user_metadata?.college || "";
+          const year = parseInt(user.user_metadata?.year || "0");
+          const branch = user.user_metadata?.branch || "";
+
+          const { data: newProfile } = await supabase
+            .from("profiles")
+            .insert({
+              id: user.id,
+              name,
+              college,
+              year,
+              branch,
+            })
+            .select()
+            .single();
+          if (newProfile) {
+            profile = newProfile;
+          }
+        }
 
         const displayName =
           profile?.name ||
@@ -131,6 +175,9 @@ export default function DashboardLayout({
           user.email?.split("@")[0] ||
           "Student";
         setUserName(displayName);
+        if (profile?.tier === "premium") {
+          setUserPlan("Premium Plan");
+        }
 
         // Fetch resume analysis count for dynamic sidebar badge
         const { count } = await supabase
