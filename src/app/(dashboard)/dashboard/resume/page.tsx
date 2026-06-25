@@ -353,12 +353,14 @@ export default function ResumePage() {
             </svg>
           </div>
           <div>
-            <p className="text-sm font-medium text-white">Unlimited analyses remaining</p>
-            <p className="text-xs text-gray-500">Free Premium Active</p>
+            <p className="text-sm font-medium text-white">
+              {loadingHistory ? "Loading..." : `${pastResumes.length} resume${pastResumes.length !== 1 ? "s" : ""} analyzed`}
+            </p>
+            <p className="text-xs text-gray-500">RAG-powered ATS analysis</p>
           </div>
         </div>
-        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-success-500/10 text-success-400 border border-success-500/20">
-          Premium Active
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-primary-500/10 text-primary-400 border border-primary-500/20">
+          AI Powered
         </span>
       </div>
 

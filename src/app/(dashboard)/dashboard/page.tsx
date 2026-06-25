@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import { timeAgo } from "@/lib/utils";
 
 /* ───────── Animated Score Ring ───────── */
 function ScoreRing({ score, size = 120, label }: { score: number; size?: number; label: string }) {
@@ -126,6 +128,121 @@ function ActivityItem({
 
 /* ───────── Dashboard Page ───────── */
 export default function DashboardPage() {
+  const [stats, setStats] = useState({
+    atsScore: 0,
+    interviewsDone: 0,
+    resumesAnalyzed: 0,
+    roadmapProgress: 0,
+  });
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        // Fetch latest ATS score & count of resumes
+        const { data: resumes } = await supabase
+          .from("resumes")
+          .select("ats_score, file_name, created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+
+        const latestAtsScore = resumes?.[0]?.ats_score || 0;
+        const resumesAnalyzed = resumes?.length || 0;
+
+        // Fetch interview count & latest score
+        const { data: interviews } = await supabase
+          .from("mock_interviews")
+          .select("score, company, round, created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+
+        const interviewsDone = interviews?.length || 0;
+
+        // Fetch roadmap progress
+        const { data: roadmapData } = await supabase
+          .from("roadmap_plans")
+          .select("progress, updated_at")
+          .eq("user_id", user.id)
+          .order("updated_at", { ascending: false })
+          .limit(1);
+
+        const roadmapProgress = roadmapData?.[0]?.progress || 0;
+
+        setStats({
+          atsScore: latestAtsScore,
+          interviewsDone,
+          resumesAnalyzed,
+          roadmapProgress,
+        });
+
+        // Build recent activity from real data
+        const activities: any[] = [];
+
+        if (resumes && resumes.length > 0) {
+          const latest = resumes[0];
+          activities.push({
+            action: "Resume analyzed",
+            detail: `ATS Score: ${latest.ats_score}/100 — ${latest.file_name}`,
+            time: latest.created_at,
+            type: "resume",
+          });
+        }
+
+        if (interviews && interviews.length > 0) {
+          const latest = interviews[0];
+          activities.push({
+            action: `Mock Interview — ${latest.company}`,
+            detail: `${latest.round} Round — Score: ${latest.score}/100`,
+            time: latest.created_at,
+            type: "interview",
+          });
+        }
+
+        if (roadmapData && roadmapData.length > 0) {
+          activities.push({
+            action: "Roadmap updated",
+            detail: `Progress: ${roadmapProgress}% complete`,
+            time: roadmapData[0].updated_at,
+            type: "roadmap",
+          });
+        }
+
+        // Sort by time descending
+        activities.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+        setRecentActivity(activities);
+      } catch (err) {
+        console.error("Error loading dashboard data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadDashboardData();
+  }, []);
+
+
+
+  const activityIcons: Record<string, React.ReactNode> = {
+    resume: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+      </svg>
+    ),
+    interview: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+      </svg>
+    ),
+    roadmap: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+      </svg>
+    ),
+  };
+
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Welcome Header */}
@@ -141,10 +258,30 @@ export default function DashboardPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "ATS Score", value: "87", change: "+12", color: "text-success-400" },
-          { label: "Interviews Done", value: "5", change: "+2 this week", color: "text-primary-400" },
-          { label: "Questions Solved", value: "142", change: "+28", color: "text-accent-400" },
-          { label: "Roadmap Progress", value: "34%", change: "On track", color: "text-warning-400" },
+          {
+            label: "ATS Score",
+            value: loading ? "..." : stats.atsScore > 0 ? String(stats.atsScore) : "—",
+            change: stats.atsScore >= 80 ? "Excellent" : stats.atsScore >= 60 ? "Good" : stats.atsScore > 0 ? "Needs work" : "Not scored yet",
+            color: stats.atsScore >= 80 ? "text-success-400" : stats.atsScore >= 60 ? "text-warning-400" : "text-gray-500",
+          },
+          {
+            label: "Interviews Done",
+            value: loading ? "..." : String(stats.interviewsDone),
+            change: stats.interviewsDone > 0 ? `${stats.interviewsDone} session${stats.interviewsDone > 1 ? "s" : ""}` : "Start one!",
+            color: "text-primary-400",
+          },
+          {
+            label: "Resumes Analyzed",
+            value: loading ? "..." : String(stats.resumesAnalyzed),
+            change: stats.resumesAnalyzed > 0 ? `${stats.resumesAnalyzed} upload${stats.resumesAnalyzed > 1 ? "s" : ""}` : "Upload first",
+            color: "text-accent-400",
+          },
+          {
+            label: "Roadmap Progress",
+            value: loading ? "..." : `${stats.roadmapProgress}%`,
+            change: stats.roadmapProgress >= 80 ? "Almost done!" : stats.roadmapProgress > 0 ? "On track" : "Get started",
+            color: "text-warning-400",
+          },
         ].map((stat) => (
           <div key={stat.label} className="glass-card rounded-xl p-4">
             <p className="text-xs text-gray-500 uppercase tracking-wider">{stat.label}</p>
@@ -162,9 +299,9 @@ export default function DashboardPage() {
           <div className="glass-card rounded-xl p-6">
             <h2 className="text-lg font-semibold text-white mb-6">Placement Readiness</h2>
             <div className="grid grid-cols-3 gap-4">
-              <ScoreRing score={87} label="ATS Score" />
-              <ScoreRing score={72} label="Interview" />
-              <ScoreRing score={34} label="Roadmap" />
+              <ScoreRing score={loading ? 0 : stats.atsScore} label="ATS Score" />
+              <ScoreRing score={loading ? 0 : Math.min(100, stats.interviewsDone * 20)} label="Interview" />
+              <ScoreRing score={loading ? 0 : stats.roadmapProgress} label="Roadmap" />
             </div>
           </div>
 
@@ -182,7 +319,7 @@ export default function DashboardPage() {
                 }
                 href="/dashboard/resume"
                 gradient="from-blue-500 to-cyan-500"
-                tag="2 free"
+                tag={stats.resumesAnalyzed > 0 ? `${stats.resumesAnalyzed} done` : "Start"}
               />
               <ActionCard
                 title="Start Mock Interview"
@@ -217,6 +354,7 @@ export default function DashboardPage() {
                 }
                 href="/dashboard/roadmap"
                 gradient="from-pink-500 to-rose-500"
+                tag={stats.roadmapProgress > 0 ? `${stats.roadmapProgress}%` : undefined}
               />
             </div>
           </div>
@@ -228,58 +366,37 @@ export default function DashboardPage() {
           <div className="glass-card rounded-xl p-5">
             <h2 className="text-lg font-semibold text-white mb-4">Recent Activity</h2>
             <div className="divide-y divide-white/5">
-              <ActivityItem
-                action="Resume analyzed"
-                detail="ATS Score: 87/100 — 3 suggestions"
-                time="2h ago"
-                icon={
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                  </svg>
-                }
-              />
-              <ActivityItem
-                action="Mock Interview — TCS"
-                detail="Technical Round — Score: 82/100"
-                time="1d ago"
-                icon={
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-                  </svg>
-                }
-              />
-              <ActivityItem
-                action="Roadmap updated"
-                detail="Week 2: Arrays & Strings — Completed"
-                time="2d ago"
-                icon={
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                }
-              />
-              <ActivityItem
-                action="Bullet enhanced"
-                detail="3 bullets improved with STAR method"
-                time="3d ago"
-                icon={
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-                  </svg>
-                }
-              />
+              {loading ? (
+                <div className="py-6 text-center">
+                  <p className="text-sm text-gray-500">Loading activity...</p>
+                </div>
+              ) : recentActivity.length > 0 ? (
+                recentActivity.map((item, i) => (
+                  <ActivityItem
+                    key={i}
+                    action={item.action}
+                    detail={item.detail}
+                    time={timeAgo(item.time)}
+                    icon={activityIcons[item.type] || activityIcons.resume}
+                  />
+                ))
+              ) : (
+                <div className="py-6 text-center">
+                  <p className="text-sm text-gray-500">No activity yet — start by analyzing a resume!</p>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Upcoming targets */}
           <div className="glass-card rounded-xl p-5">
-            <h2 className="text-lg font-semibold text-white mb-4">This Week&apos;s Goals</h2>
+            <h2 className="text-lg font-semibold text-white mb-4">Getting Started</h2>
             <div className="space-y-3">
               {[
-                { task: "Solve 5 DSA problems", done: true },
-                { task: "Analyze resume v2", done: true },
-                { task: "Mock interview — Infosys", done: false },
-                { task: "Review OOP concepts", done: false },
+                { task: "Upload and analyze your resume", done: stats.resumesAnalyzed > 0 },
+                { task: "Complete a mock interview", done: stats.interviewsDone > 0 },
+                { task: "Browse company questions", done: false },
+                { task: "Generate your placement roadmap", done: stats.roadmapProgress > 0 },
               ].map((item, i) => (
                 <label key={i} className="flex items-center gap-3 cursor-pointer group">
                   <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${

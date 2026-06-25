@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 /* ───────── Icon Components ───────── */
 function HomeIcon() {
@@ -96,6 +97,69 @@ export default function DashboardLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
+  // ─── Dynamic user state ───
+  const [userName, setUserName] = useState("Loading...");
+  const [userEmail, setUserEmail] = useState("");
+  const [userPlan, setUserPlan] = useState("Free Plan");
+  const [resumeCount, setResumeCount] = useState<number | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          router.push("/login");
+          return;
+        }
+
+        setUserEmail(user.email || "");
+
+        // Fetch name from profiles table
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("name")
+          .eq("id", user.id)
+          .single();
+
+        const displayName =
+          profile?.name ||
+          user.user_metadata?.name ||
+          user.user_metadata?.full_name ||
+          user.email?.split("@")[0] ||
+          "Student";
+        setUserName(displayName);
+
+        // Fetch resume analysis count for dynamic sidebar badge
+        const { count } = await supabase
+          .from("resumes")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id);
+        setResumeCount(count ?? 0);
+
+      } catch (err) {
+        console.error("Error loading user:", err);
+      }
+    };
+    loadUser();
+  }, [router]);
+
+  const handleSignOut = async () => {
+    setSigningOut(true);
+    try {
+      await supabase.auth.signOut();
+      router.push("/login");
+    } catch (err) {
+      console.error("Sign out error:", err);
+      setSigningOut(false);
+    }
+  };
+
+  const userInitial = userName && userName !== "Loading..."
+    ? userName.charAt(0).toUpperCase()
+    : "U";
 
   return (
     <div className="flex min-h-screen bg-surface-950">
@@ -148,9 +212,9 @@ export default function DashboardLayout({
               >
                 {item.icon}
                 {item.label}
-                {item.label === "Resume Analyzer" && (
+                {item.label === "Resume Analyzer" && resumeCount !== null && (
                   <span className="ml-auto text-[10px] font-bold bg-primary-500/20 text-primary-400 px-1.5 py-0.5 rounded">
-                    2 left
+                    {resumeCount} done
                   </span>
                 )}
               </Link>
@@ -162,20 +226,30 @@ export default function DashboardLayout({
         <div className="p-4 m-3 rounded-xl bg-gradient-to-br from-primary-500/10 to-accent-500/10 border border-primary-500/20">
           <p className="text-sm font-semibold text-white mb-1">Upgrade to Premium</p>
           <p className="text-xs text-gray-400 mb-3">Unlimited access to all features</p>
-          <button className="w-full btn-primary text-xs py-2">
+          <Link href="/dashboard/billing" className="w-full btn-primary text-xs py-2 block text-center">
             <span>₹149/month</span>
-          </button>
+          </Link>
         </div>
 
         {/* User */}
         <div className="px-4 py-4 border-t border-white/5 flex items-center gap-3">
           <div className="w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-xs font-bold text-white">
-            U
+            {userInitial}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">Student User</p>
-            <p className="text-xs text-gray-500 truncate">Free Plan</p>
+            <p className="text-sm font-medium text-white truncate">{userName}</p>
+            <p className="text-xs text-gray-500 truncate">{userEmail || userPlan}</p>
           </div>
+          <button
+            onClick={handleSignOut}
+            disabled={signingOut}
+            className="p-1.5 rounded-lg text-gray-500 hover:text-error-400 hover:bg-error-500/10 transition-all"
+            title="Sign out"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+            </svg>
+          </button>
         </div>
       </aside>
 

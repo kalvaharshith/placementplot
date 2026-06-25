@@ -44,11 +44,19 @@ export async function POST(request: NextRequest) {
     jobDescription = (formData.get("jobDescription") as string) || undefined;
 
     if (file) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const uint8Array = new Uint8Array(buffer);
-      const pdf = await getDocumentProxy(uint8Array);
-      const { text } = await extractText(pdf, { mergePages: true });
-      resumeText = text;
+      try {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const uint8Array = new Uint8Array(buffer);
+        const pdf = await getDocumentProxy(uint8Array);
+        const { text } = await extractText(pdf, { mergePages: true });
+        resumeText = text;
+      } catch (pdfErr: any) {
+        console.error("PDF parsing error:", pdfErr);
+        return NextResponse.json(
+          { error: `Could not read the uploaded PDF file. It may be corrupted, password-protected, or a scanned image. Please upload a text-based PDF generated from Word or Google Docs. (${pdfErr.message || "Parse error"})` },
+          { status: 400 }
+        );
+      }
     }
 
     if (!resumeText || resumeText.trim().length < 50) {
@@ -140,10 +148,15 @@ export async function POST(request: NextRequest) {
         analysis,
         warning: "RAG context unavailable — using general AI analysis",
       });
-    } catch (fallbackError) {
+    } catch (fallbackError: any) {
       console.error("Fallback analysis error:", fallbackError);
+      const msg = fallbackError.message?.includes("API key") || fallbackError.message?.includes("401")
+        ? "AI service authentication failed. Please check the Gemini API key configuration."
+        : fallbackError.message?.includes("quota") || fallbackError.message?.includes("429")
+        ? "AI service rate limit reached. Please wait a minute and try again."
+        : "Failed to analyze resume. The AI service may be temporarily unavailable. Please try again later.";
       return NextResponse.json(
-        { error: "Failed to analyze resume. Please try again later." },
+        { error: msg },
         { status: 500 }
       );
     }

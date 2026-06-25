@@ -325,7 +325,18 @@ export default function InterviewPage() {
 
       // Read custom system prompt metadata from headers
       const systemPromptBase64 = res.headers.get("x-system-prompt");
-      const systemPromptStr = systemPromptBase64 ? atob(systemPromptBase64) : "";
+      let systemPromptStr = "";
+      if (systemPromptBase64) {
+        try {
+          systemPromptStr = atob(systemPromptBase64);
+        } catch {
+          console.warn("Could not decode system prompt header");
+        }
+      }
+      // Fallback: reconstruct a basic system prompt if header was not readable
+      if (!systemPromptStr) {
+        systemPromptStr = `You are a senior interviewer at ${company} conducting a ${round} interview for the position of SDE. The difficulty level is ${difficulty}. Ask questions ONE AT A TIME. Be professional and evaluate responses carefully.`;
+      }
       setSystemPrompt(systemPromptStr);
 
       const reader = res.body?.getReader();
@@ -382,6 +393,13 @@ export default function InterviewPage() {
       const remainingText = accumulatedTextRef.current.slice(spokenTextRef.current.length);
       if (remainingText.trim() && voiceEnabledRef.current) {
         speakText(remainingText);
+      }
+
+      // Check if the streamed content was an error message
+      if (textAccumulator.startsWith("[ERROR]")) {
+        setError(textAccumulator.replace("[ERROR] ", ""));
+        setStarted(false);
+        setMessages([]);
       }
 
     } catch (err: any) {
@@ -486,6 +504,21 @@ export default function InterviewPage() {
         speakText(remainingText);
       }
 
+      // Check if the streamed content was an error message
+      if (textAccumulator.startsWith("[ERROR]")) {
+        // Replace the AI message with an error notification
+        setMessages((prev) => {
+          const list = [...prev];
+          if (list.length > 0) {
+            list[list.length - 1] = {
+              ...list[list.length - 1],
+              content: textAccumulator.replace("[ERROR] ", "⚠️ "),
+            };
+          }
+          return list;
+        });
+      }
+
     } catch (err: any) {
       setMessages((prev) => [
         ...prev,
@@ -559,7 +592,9 @@ export default function InterviewPage() {
         console.error("Error saving mock interview to DB:", dbErr);
       }
     } catch (err: any) {
-      setError(err.message || "Failed to score interview. Please try again.");
+      const errorMsg = err.message || "Failed to score interview.";
+      setError(`${errorMsg} Click 'Finish & Evaluate' to retry.`);
+      setStarted(true); // Allow retry
     } finally {
       setEvaluating(false);
     }

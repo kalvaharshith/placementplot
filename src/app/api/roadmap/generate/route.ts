@@ -3,76 +3,6 @@ import { generateJSON } from "@/lib/ai";
 import { retrieveAndAugment } from "@/lib/rag";
 import { buildRoadmapPrompt, buildSkillGapPrompt } from "@/features/roadmap/prompts";
 
-// ─── Default Static Roadmap Fallback (if AI fails entirely) ─────
-const mockRoadmap = {
-  title: "TCS & Infosys Prep Plan",
-  totalWeeks: 4,
-  weeks: [
-    {
-      week: 1,
-      theme: "Foundations & Aptitude",
-      goals: ["Master arrays & strings fundamentals", "Practice basic quantitative aptitude"],
-      tasks: [
-        {
-          title: "Complete arrays & strings fundamentals",
-          description: "Solve easy-medium problems on reverse array, search, and string parsing.",
-          type: "practice",
-          estimatedHours: 4,
-          resources: [
-            { title: "GeeksforGeeks Arrays", url: "https://www.geeksforgeeks.org/array-data-structure/", type: "article" }
-          ],
-          relevantCompanies: ["TCS", "Infosys"],
-          priority: "high"
-        },
-        {
-          title: "Aptitude (Quantitative)",
-          description: "Learn time & work, ratios, and percentages formula.",
-          type: "study",
-          estimatedHours: 3,
-          resources: [
-            { title: "IndiaBIX Quantitative", url: "https://www.indiabix.com/", type: "problem_set" }
-          ],
-          relevantCompanies: ["TCS"],
-          priority: "high"
-        }
-      ],
-      milestone: "Able to write basic array operations and pass basic TCS NQT quantitative sections"
-    },
-    {
-      week: 2,
-      theme: "OOPs and Database Basics",
-      goals: ["Revise OOP principles", "Learn basic SQL queries"],
-      tasks: [
-        {
-          title: "Object-Oriented Programming (OOPs)",
-          description: "Understand classes, objects, inheritance, polymorphism, encapsulation, and abstraction.",
-          type: "study",
-          estimatedHours: 4,
-          resources: [
-            { title: "Java OOPs Concepts", url: "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/", type: "article" }
-          ],
-          relevantCompanies: ["Infosys", "Wipro"],
-          priority: "medium"
-        },
-        {
-          title: "SQL Query Practice",
-          description: "Practice SELECT, WHERE, JOINs, and basic aggregation queries.",
-          type: "practice",
-          estimatedHours: 3,
-          resources: [
-            { title: "LeetCode SQL 50", url: "https://leetcode.com/studyplan/30-days-of-dsa/", type: "problem_set" }
-          ],
-          relevantCompanies: ["Infosys"],
-          priority: "high"
-        }
-      ],
-      milestone: "Able to define core OOP paradigms and compose standard JOIN queries"
-    }
-  ],
-  tips: ["Practice coding under timed constraints.", "Revise quantitative formulas daily."],
-  summary: "A focused study plan curated to match the technical testing criteria of TCS and Infosys."
-};
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -185,7 +115,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error("Roadmap generation error:", error);
 
-    // Fallback directly to AI without RAG if keys are configured, or fallback to mock template
+    // Fallback directly to AI without RAG if keys are configured
     try {
       if (process.env.GEMINI_API_KEY) {
         const body = await request.clone().json();
@@ -202,14 +132,18 @@ export async function POST(request: NextRequest) {
           warning: "Generated without RAG knowledge base",
         });
       }
-    } catch (fallbackError) {
+    } catch (fallbackError: any) {
       console.error("Roadmap fallback failed:", fallbackError);
     }
 
-    return NextResponse.json({
-      success: true,
-      roadmap: mockRoadmap,
-      warning: "Service unavailable — using mock local roadmap data",
-    });
+    const msg = error.message?.includes("API key") || error.message?.includes("401")
+      ? "AI service authentication failed. Please check the Gemini API key."
+      : error.message?.includes("quota") || error.message?.includes("429")
+      ? "AI service rate limit reached. Please try again in a minute."
+      : "Failed to generate roadmap. The AI service may be temporarily unavailable.";
+    return NextResponse.json(
+      { error: msg },
+      { status: 500 }
+    );
   }
 }
