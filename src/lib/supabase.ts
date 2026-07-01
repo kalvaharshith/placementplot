@@ -1,21 +1,26 @@
 import { createBrowserClient } from "@supabase/ssr";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 // ─── Client-side Supabase (browser) ─────────────────────────────
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
-export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+export const supabase: SupabaseClient = supabaseUrl && supabaseAnonKey
+  ? createBrowserClient(supabaseUrl, supabaseAnonKey)
+  : (null as any);
 
 // ─── Server-side Supabase (API routes / server components) ──────
 // Uses the service role key which bypasses Row Level Security.
 // NEVER expose this to the client.
 export function createServerSupabase() {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!serviceRoleKey) {
-    throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set");
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || supabaseUrl;
+  
+  if (!url || !serviceRoleKey) {
+    throw new Error("Supabase URL or SUPABASE_SERVICE_ROLE_KEY is not configured.");
   }
-  return createClient(supabaseUrl, serviceRoleKey, {
+  
+  return createClient(url, serviceRoleKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
