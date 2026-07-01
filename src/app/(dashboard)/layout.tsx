@@ -77,6 +77,13 @@ function CloseIcon() {
     </svg>
   );
 }
+function ShieldIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+    </svg>
+  );
+}
 
 /* ───────── Navigation Items ───────── */
 const navItems = [
@@ -105,6 +112,7 @@ export default function DashboardLayout({
   const [userPlan, setUserPlan] = useState("Free Plan");
   const [resumeCount, setResumeCount] = useState<number | null>(null);
   const [signingOut, setSigningOut] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -116,6 +124,8 @@ export default function DashboardLayout({
         }
 
         setUserEmail(user.email || "");
+        const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "kalvaharshith@gmail.com";
+        setIsAdmin(user.email === adminEmail);
 
         // Fetch profile from profiles table
         let { data: profile } = await supabase
@@ -244,7 +254,7 @@ export default function DashboardLayout({
 
         {/* Nav links */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
+          {(isAdmin ? [...navItems, { label: "Admin Panel", href: "/dashboard/admin", icon: <ShieldIcon /> }] : navItems).map((item) => {
             const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
             return (
               <Link

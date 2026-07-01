@@ -10,7 +10,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 CREATE TABLE IF NOT EXISTS documents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   content TEXT NOT NULL,
-  embedding VECTOR(768),  -- Gemini text-embedding-004 dimension
+  embedding VECTOR(3072),  -- Gemini embedding model dimension
   metadata JSONB DEFAULT '{}',
   kb_type TEXT NOT NULL,  -- 'ats_rules' | 'resume_examples' | 'interview_bank' | 'company_profiles' | 'learning_resources'
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -37,7 +37,7 @@ CREATE INDEX IF NOT EXISTS documents_fts_idx
 
 -- 7. Hybrid search RPC function (vector + full-text)
 CREATE OR REPLACE FUNCTION match_documents(
-  query_embedding VECTOR(768),
+  query_embedding VECTOR(3072),
   query_text TEXT,
   filter_kb_type TEXT,
   filter_metadata JSONB DEFAULT '{}',
@@ -103,7 +103,7 @@ $$;
 
 -- 8. Pure vector search (fallback)
 CREATE OR REPLACE FUNCTION vector_search(
-  query_embedding VECTOR(768),
+  query_embedding VECTOR(3072),
   filter_kb_type TEXT,
   match_count INT DEFAULT 5
 )

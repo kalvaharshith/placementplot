@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     // ── RAG: Perform search on interview_bank ──
     let bankResults: any[] = [];
     try {
-      const { chunks } = await retrieveAndAugment(query, "interview_bank", { topK: 5 });
+      const { chunks } = await retrieveAndAugment(query, "interview_bank", { topK: 15 });
       bankResults = chunks;
     } catch (e) {
       console.warn("RAG search failed for interview bank, using fallback.");

@@ -3,17 +3,20 @@
 /* ===== PlacementPlot AI Design System ===== */
 
 @theme {
-  /* Primary brand colors */
+  --font-sans: var(--font-almarai), sans-serif;
+  --font-serif: var(--font-serif), serif;
+
+  /* Primary brand colors - Overridden with beige theme */
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
   --color-primary-200: #bfdbfe;
   --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
+  --color-primary-400: #e2dfcf;
+  --color-primary-500: #DEDBC8;
+  --color-primary-600: #C5C2AF;
+  --color-primary-700: #a8a696;
+  --color-primary-800: #8c8a7c;
+  --color-primary-900: #706e63;
 
   /* Accent violet */
   --color-accent-50: #f5f3ff;
@@ -40,12 +43,12 @@
   --color-error-400: #f87171;
   --color-error-500: #ef4444;
 
-  /* Dark surfaces */
-  --color-surface-950: #030712;
-  --color-surface-900: #0a0f1e;
-  --color-surface-800: #111827;
-  --color-surface-700: #1f2937;
-  --color-surface-600: #374151;
+  /* Dark surfaces - Overridden with true black & rich dark greys */
+  --color-surface-950: #000000;
+  --color-surface-900: #101010;
+  --color-surface-800: #1a1a1a;
+  --color-surface-700: #212121;
+  --color-surface-600: #2b2b2b;
 
   /* Animation durations */
   --animate-float: float 6s ease-in-out infinite;
@@ -60,6 +63,9 @@
   --animate-bounce-gentle: bounceGentle 2s ease-in-out infinite;
   --animate-typewriter: typewriter 3s steps(30) infinite;
   --animate-spin-slow: spin 8s linear infinite;
+
+  /* Custom variables from prisma-landing */
+  --color-primary: #DEDBC8;
 }
 
 /* ===== Keyframe Animations ===== */
@@ -131,8 +137,9 @@ html {
 }
 
 body {
-  background-color: var(--color-surface-950);
-  color: #e2e8f0;
+  background-color: #000000;
+  color: #E1E0CC;
+  font-family: var(--font-almarai), sans-serif;
   font-feature-settings: "rlig" 1, "calt" 1;
 }
 
@@ -174,14 +181,14 @@ body {
 /* ===== Gradient Utilities ===== */
 
 .gradient-text {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+  background: linear-gradient(135deg, #E1E0CC, #DEDBC8, #A3A295);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-warm {
-  background: linear-gradient(135deg, #f59e0b, #ef4444, #ec4899);
+  background: linear-gradient(135deg, #DEDBC8, #A3A295, #706e63);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -209,11 +216,11 @@ body {
 }
 
 .gradient-bg {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: var(--color-primary);
 }
 
 .gradient-bg-animated {
-  background: linear-gradient(-45deg, #3b82f6, #8b5cf6, #06b6d4, #3b82f6);
+  background: linear-gradient(-45deg, #101010, #212121, #000000, #101010);
   background-size: 400% 400%;
   animation: gradient 8s ease infinite;
 }
@@ -235,8 +242,8 @@ body {
 /* ===== Button Styles ===== */
 
 .btn-primary {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  color: white;
+  background: var(--color-primary);
+  color: #000000;
   font-weight: 600;
   padding: 0.75rem 2rem;
   border-radius: 0.75rem;
@@ -249,14 +256,14 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  background: rgba(0, 0, 0, 0.05);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 8px 25px rgba(222, 219, 200, 0.2);
 }
 
 .btn-primary:hover::before {
@@ -270,7 +277,7 @@ body {
 
 .btn-secondary {
   background: rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
+  color: #E1E0CC;
   font-weight: 600;
   padding: 0.75rem 2rem;
   border-radius: 0.75rem;
@@ -280,7 +287,7 @@ body {
 
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(59, 130, 246, 0.5);
+  border-color: var(--color-primary);
   transform: translateY(-2px);
 }
 
@@ -331,3 +338,22 @@ body {
 .stagger-4 { animation-delay: 0.4s; }
 .stagger-5 { animation-delay: 0.5s; }
 .stagger-6 { animation-delay: 0.6s; }
+
+/* Custom CSS Utilities for Fractal Noise & Landing Scoping */
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 250 250'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 250 250'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+.landing-root {
+  font-family: 'Almarai', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+.landing-root * {
+  font-family: 'Almarai', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}

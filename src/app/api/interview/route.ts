@@ -50,7 +50,7 @@ async function handleStartInterviewStream(body: {
       `${company} ${round} ${role} interview questions ${difficulty}`,
       "interview_bank",
       {
-        topK: 15,
+        topK: 25,
         contextHeader: `REAL ${company.toUpperCase()} AND RELATED INTERVIEW QUESTIONS:`,
       }
     );

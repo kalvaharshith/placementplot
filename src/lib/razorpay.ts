@@ -76,7 +76,7 @@ export const TIER_LIMITS: Record<UserTier, TierLimits> = {
   free: {
     resumeAnalyses: 2,
     mockInterviews: 1,
-    questionsPerCompany: 5,
+    questionsPerCompany: 15,
     hasRoadmap: false,
     hasBulletEnhancer: false,
   },

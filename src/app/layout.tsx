@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Almarai, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const almarai = Almarai({
+  variable: "--font-almarai",
+  weight: ["300", "400", "700", "800"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-serif",
+  weight: ["400"],
+  style: ["italic"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -59,9 +68,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${almarai.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-[family-name:var(--font-inter)]">
+      <body className="min-h-full flex flex-col font-sans bg-black text-[#E1E0CC] relative">
+        {/* Global Fractal Noise Overlay */}
+        <div className="noise-overlay absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none z-50 animate-pulse-slow" style={{ animationDuration: "10s" }} />
         {children}
       </body>
     </html>

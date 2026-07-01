@@ -1,9 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import crypto from "crypto";
 
 // ─── Embedding Model ───────────────────────────────────────────
 
 const EMBEDDING_MODEL = "gemini-embedding-001";
-const EMBEDDING_DIMENSIONS = 768;
+const EMBEDDING_DIMENSIONS = 3072;
 
 function getGenAI() {
   const apiKey = process.env.GEMINI_API_KEY || "";
@@ -16,8 +17,8 @@ const CACHE_MAX_SIZE = 500;
 const embeddingCache = new Map<string, number[]>();
 
 function getCacheKey(text: string): string {
-  // Simple hash for cache key
-  return text.trim().toLowerCase().substring(0, 200);
+  // Compute secure SHA-256 hash to avoid collisions for similar texts/resumes
+  return crypto.createHash("sha256").update(text.trim().toLowerCase()).digest("hex");
 }
 
 function getCachedEmbedding(text: string): number[] | undefined {
