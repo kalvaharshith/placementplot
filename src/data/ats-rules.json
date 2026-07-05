@@ -1,26 +1,86 @@
 [
   {
-    "content": "ATS Formatting Standard: File Formats. Always submit resumes in PDF or DOCX formats. Avoid saving resumes as images (PNG, JPEG) or using scanned PDFs, as ATS parsers cannot read text from images without OCR. Clean text PDFs generated directly from Word or Google Docs are highly recommended.",
-    "metadata": { "category": "formatting", "rule_id": "file_format" }
+    "content": "ATS Rule — Contact Information: Always include a professional email address, phone number, and LinkedIn profile URL at the top of your resume. Avoid using college email addresses. Use a simple format like 'firstname.lastname@gmail.com'. Do not include photos, date of birth, marital status, or full home address — just city and state are sufficient.",
+    "metadata": { "topic": "contact_info", "source": "ATS Best Practices" }
   },
   {
-    "content": "ATS Structure Standard: Standard Section Headings. Use simple, standard section headings such as 'Work Experience', 'Professional Experience', 'Education', 'Projects', 'Skills', and 'Certifications'. Avoid creative titles like 'Where I've Been' or 'My Superpowers', as ATS parsers categorize information based on recognized heading keywords.",
-    "metadata": { "category": "structure", "rule_id": "section_headings" }
+    "content": "ATS Rule — File Format: Always submit your resume as a PDF unless the application specifically asks for .docx. PDFs preserve formatting across systems. Name the file professionally: 'FirstName_LastName_Resume.pdf'. Never use generic names like 'resume_final.pdf' or 'cv.pdf'. Avoid submitting images (JPEG/PNG) of your resume — ATS systems cannot parse them.",
+    "metadata": { "topic": "file_naming", "source": "ATS Best Practices" }
   },
   {
-    "content": "ATS Design Guideline: Avoid Tables, Columns, and Complex Elements. Do not use tables, text boxes, charts, graphics, or multi-column layouts. Many older ATS systems read left-to-right across the entire page, which scrambles content inside columns and tables, making the parsed text unreadable.",
-    "metadata": { "category": "formatting", "rule_id": "layout_elements" }
+    "content": "ATS Rule — Section Headings: Use standard, universally recognized section headings that ATS parsers expect: 'Education', 'Experience', 'Skills', 'Projects', 'Certifications', 'Summary'. Avoid creative headings like 'My Journey', 'What I Bring', 'The Story So Far'. ATS systems match headings to predefined categories — non-standard headings may cause your content to be miscategorized or ignored entirely.",
+    "metadata": { "topic": "section_headings", "source": "ATS Best Practices" }
   },
   {
-    "content": "ATS Content Standard: Quantifiable Impact and the STAR/XYZ Formula. Every bullet point in the experience and projects sections should follow the STAR framework (Situation, Task, Action, Result) or the Google XYZ formula: 'Accomplished [X] as measured by [Y], by doing [Z]'. Resumes with quantified impact (percentages, dollar amounts, time saved, scale) score up to 40% higher.",
-    "metadata": { "category": "content", "rule_id": "quantifiable_impact" }
+    "content": "ATS Rule — Keywords Matching: Tailor your resume keywords to match the job description. ATS systems score resumes based on keyword matches. Extract key skills, technologies, and qualifications from the JD and incorporate them naturally into your Skills and Experience sections. Use exact terms from the JD (e.g., if JD says 'React.js', don't write 'React' alone). Include both acronyms and full forms: 'Machine Learning (ML)', 'Structured Query Language (SQL)'.",
+    "metadata": { "topic": "keywords", "source": "ATS Best Practices" }
   },
   {
-    "content": "ATS Keyword Alignment: Hard Skills and Technologies. Parse the target Job Description to identify core technologies, programming languages, tools, and methodologies. Ensure these exact keywords are present in your 'Skills' section and naturally integrated into your experience descriptions. Abbreviations and full terms should both be included (e.g., 'API (Application Programming Interface)').",
-    "metadata": { "category": "keywords", "rule_id": "keyword_matching" }
+    "content": "ATS Rule — Formatting: Use a clean, single-column layout. Avoid tables, text boxes, columns, headers/footers, and graphics — ATS parsers cannot read content inside these elements. Use standard fonts: Arial, Calibri, Times New Roman, or Helvetica at 10-12pt. Use bullet points (solid circles or hyphens) instead of arrows or custom symbols. Ensure adequate white space — cramming too much content reduces readability for both ATS and human reviewers.",
+    "metadata": { "topic": "formatting", "source": "ATS Best Practices" }
   },
   {
-    "content": "ATS Resume Length and Font. For fresh graduates and candidates with under 5 years of experience, a single-page resume is optimal. Use clean, web-safe sans-serif fonts such as Arial, Calibri, Helvetica, or Garamond. Maintain a font size between 10pt and 12pt for body text, and 14pt to 16pt for headings.",
-    "metadata": { "category": "formatting", "rule_id": "length_font" }
+    "content": "ATS Rule — Action Verbs: Start every bullet point with a strong action verb. Use past tense for previous roles and present tense for current roles. Top action verbs for tech resumes: Developed, Implemented, Architected, Optimized, Automated, Designed, Built, Deployed, Integrated, Reduced, Increased, Led, Managed, Collaborated, Streamlined, Migrated, Refactored, Debugged, Tested, Analyzed. Avoid weak starters like 'Responsible for', 'Helped with', 'Worked on', 'Assisted in'.",
+    "metadata": { "topic": "action_verbs", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Quantify Impact: Use numbers, percentages, and metrics to quantify your achievements. Recruiters and ATS systems favor measurable impact. Instead of 'Improved website performance', write 'Optimized page load time by 40%, reducing bounce rate from 35% to 18%'. Instead of 'Handled database queries', write 'Optimized 15 SQL queries, reducing average response time from 2.3s to 0.4s'. The XYZ formula: 'Accomplished [X] as measured by [Y], by doing [Z]'.",
+    "metadata": { "topic": "quantification", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Skills Section: Create a dedicated 'Technical Skills' section listing your competencies in categories. Format: 'Languages: Java, Python, JavaScript, C++ | Frameworks: React, Node.js, Spring Boot | Databases: MySQL, PostgreSQL, MongoDB | Tools: Git, Docker, Jenkins, AWS'. List skills in order of proficiency. Include both hard skills (technologies) and soft skills (leadership, communication) but keep soft skills minimal — focus on technical competencies.",
+    "metadata": { "topic": "skills_section", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Education Section: For freshers, keep Education near the top. Include: Degree name, Major, University name, Graduation year, and CGPA/GPA (if above 7.0/3.0). Format: 'B.Tech in Computer Science | XYZ University | 2024 | CGPA: 8.5/10'. Include relevant coursework only if it adds value for the target role. List certifications separately with issuing body and date: 'AWS Certified Cloud Practitioner — Amazon Web Services, 2024'.",
+    "metadata": { "topic": "education_format", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Projects Section: For freshers/students, the Projects section is as important as Experience. Each project should include: Project name, technologies used, duration, and 2-3 bullet points describing what you built and the impact. Format: 'E-Commerce Platform | React, Node.js, MongoDB | Jan-Mar 2024'. Bullet: 'Built a full-stack e-commerce application with user authentication, product catalog, cart management, and Razorpay payment integration, serving 200+ test users'. Link to GitHub/live demo where possible.",
+    "metadata": { "topic": "projects_section", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Date Formatting: Use consistent date formats throughout your resume. Recommended format: 'MMM YYYY' (e.g., 'Jan 2024 – Mar 2024' or 'Jan 2024 – Present'). Never mix formats (e.g., '01/2024' with 'January 2024'). For ongoing activities, use 'Present' or 'Current'. Ensure chronological order — most recent first (reverse chronological). Gaps longer than 6 months should be addressed (freelancing, learning, personal projects).",
+    "metadata": { "topic": "date_formatting", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Resume Length: For freshers and candidates with <3 years experience, keep resume to exactly ONE page. For 3-7 years experience, a maximum of TWO pages. Beyond 7 years, up to THREE pages. Quality over quantity — every line should add value. Remove filler content, outdated skills (like MS Office for tech roles), and irrelevant hobbies. A one-page resume that showcases strong projects and skills beats a two-page resume padded with fluff.",
+    "metadata": { "topic": "resume_length", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Summary/Objective: A professional summary at the top of your resume should be 2-3 lines maximum. For freshers: 'Computer Science graduate from XYZ University with expertise in full-stack development (React, Node.js) and strong foundations in DSA, seeking an SDE role to build scalable software solutions.' Avoid generic objectives like 'Seeking a challenging position where I can utilize my skills.' The summary should be tailored to each job application with relevant keywords.",
+    "metadata": { "topic": "summary_objective", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Links & Portfolio: Include your GitHub profile URL and LinkedIn URL. If you have a personal portfolio website, include it. Format: 'github.com/username | linkedin.com/in/username | portfolio-url.com'. Ensure all links are clickable in the PDF version. Your GitHub should have pinned repositories with READMEs, clean commit history, and descriptive project titles. An active GitHub with consistent contributions significantly boosts your profile.",
+    "metadata": { "topic": "links_portfolio", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Certifications: List relevant certifications with the issuing organization and date. Place them in a dedicated 'Certifications' section or under Education. Format: 'AWS Certified Solutions Architect — Amazon Web Services (2024)'. Prioritize certifications relevant to the target role. Top valued certifications for freshers: AWS Cloud Practitioner, Google Cloud Associate, Azure Fundamentals (AZ-900), Meta/Google Frontend/Backend certificates, Coursera ML specialization (Stanford).",
+    "metadata": { "topic": "certifications", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Consistency: Maintain absolute consistency throughout your resume — font size, bullet style, date format, capitalization, and spacing. If you bold company names, bold ALL company names. If you use bullet circles, use circles everywhere (not arrows in one section and dashes in another). Inconsistency signals carelessness and can confuse ATS parsers. Pro tip: Create a resume template and reuse it for every application.",
+    "metadata": { "topic": "consistency_rules", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Bullet Point Structure: Each bullet should follow the PAR (Problem-Action-Result) or XYZ (Accomplished X, as measured by Y, by doing Z) framework. Limit bullets to 1-2 lines each. Use 3-5 bullets per role/project. Start with the most impressive achievement. Example PAR: 'Reduced API response time by 60% (Result) by implementing Redis caching layer (Action) to address slow database queries affecting 10K daily users (Problem).'",
+    "metadata": { "topic": "bullet_formatting", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Spacing & Margins: Use 0.5-1 inch margins on all sides. Line spacing should be 1.0 to 1.15. Section spacing: 8-12pt between sections. Don't let margins go below 0.5 inches — some ATS systems crop content at the edges. Ensure your resume looks good when printed on A4 paper. White space is your friend — it improves readability for human reviewers who spend an average of 7.4 seconds on initial resume scan.",
+    "metadata": { "topic": "spacing_margins", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Avoid ATS Parsing Pitfalls: Never use images or icons for contact info (phone icon, email icon). Don't put text in headers or footers — many ATS systems skip these. Avoid using 'periods' or 'stars' for skill level ratings (e.g., ★★★☆☆) — ATS can't interpret these. Don't use abbreviations without spelling them out at least once. Avoid special characters like em-dashes (—), use standard hyphens (-) instead.",
+    "metadata": { "topic": "ats_parsing_tips", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Tailor Per Application: The #1 mistake candidates make is sending the same resume everywhere. Study each job description carefully. Mirror the exact language used in the JD. If the JD says 'RESTful API development', use that exact phrase instead of 'built REST APIs'. Create a master resume with all your experiences, then create tailored versions for each application by emphasizing the most relevant experiences and skills. This alone can improve your ATS match score by 30-50%.",
+    "metadata": { "topic": "tailoring", "source": "ATS Best Practices" }
+  },
+  {
+    "content": "ATS Rule — Experience Section for Freshers: If you lack formal work experience, use 'Relevant Experience' or 'Internship Experience' headers. Include freelance work, open-source contributions, hackathon projects, and teaching/mentoring. Format internships like jobs: 'Software Engineering Intern | Company Name | Duration'. Each entry should have 3-4 bullets demonstrating technical skills and impact. Even college lab projects can be listed if framed professionally.",
+    "metadata": { "topic": "experience_freshers", "source": "ATS Best Practices" }
   }
 ]

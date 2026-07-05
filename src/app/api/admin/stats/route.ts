@@ -14,12 +14,8 @@ export async function GET(request: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-    // Create temporary Supabase client with JWT token to verify session
     const client = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      },
+      auth: { persistSession: false, autoRefreshToken: false },
     });
 
     const { data: { user }, error: authError } = await client.auth.getUser(token);
@@ -27,16 +23,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
     }
 
-    // Gating check on administrator email
     const adminEmail = process.env.ADMIN_EMAIL || "kalvaharshith@gmail.com";
     if (user.email !== adminEmail) {
       return NextResponse.json({ error: "Forbidden - Admin privilege required" }, { status: 403 });
     }
 
-    // Connect to database with service role bypass client
     const supabaseServer = createServerSupabase();
 
-    // Query exact counts in parallel using head: true configuration for speed
+    // ─── Core Stats (parallel) ───
     const [profilesRes, resumesRes, interviewsRes, documentsRes] = await Promise.all([
       supabaseServer.from("profiles").select("*", { count: "exact", head: true }),
       supabaseServer.from("resumes").select("*", { count: "exact", head: true }),
@@ -49,6 +43,41 @@ export async function GET(request: NextRequest) {
     if (interviewsRes.error) throw new Error(interviewsRes.error.message);
     if (documentsRes.error) throw new Error(documentsRes.error.message);
 
+    // ─── Per-KB Type Breakdown (parallel) ───
+    const kbTypes = ["interview_bank", "company_profiles", "ats_rules", "resume_examples", "learning_resources"] as const;
+    const kbCountPromises = kbTypes.map(kbType =>
+      supabaseServer
+        .from("documents")
+        .select("*", { count: "exact", head: true })
+        .eq("kb_type", kbType)
+    );
+    const kbCountResults = await Promise.all(kbCountPromises);
+
+    const kbBreakdown: Record<string, number> = {};
+    kbTypes.forEach((kbType, i) => {
+      kbBreakdown[kbType] = kbCountResults[i].count || 0;
+    });
+
+    // ─── Recent Signups (last 5) ───
+    const { data: recentUsers } = await supabaseServer
+      .from("profiles")
+      .select("id, name, college, tier, created_at")
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    // ─── Recent Interviews (last 5) ───
+    const { data: recentInterviews } = await supabaseServer
+      .from("mock_interviews")
+      .select("id, company, round, score, created_at, user_id")
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    // ─── Premium User Count ───
+    const { count: premiumCount } = await supabaseServer
+      .from("profiles")
+      .select("*", { count: "exact", head: true })
+      .eq("tier", "premium");
+
     return NextResponse.json({
       success: true,
       stats: {
@@ -56,7 +85,11 @@ export async function GET(request: NextRequest) {
         resumes: resumesRes.count || 0,
         interviews: interviewsRes.count || 0,
         documents: documentsRes.count || 0,
+        premiumUsers: premiumCount || 0,
       },
+      kbBreakdown,
+      recentUsers: recentUsers || [],
+      recentInterviews: recentInterviews || [],
     });
   } catch (err: any) {
     console.error("Admin stats API error:", err);

@@ -12,8 +12,8 @@ interface Message {
 }
 
 /* ───────── Interview Config ───────── */
-const companyOptions = ["TCS", "Infosys", "Wipro", "Google", "Microsoft", "Amazon", "Adobe", "Goldman Sachs", "Flipkart", "Cognizant"];
-const roundOptions = ["Technical", "HR", "Behavioral", "DSA", "System Design"];
+const companyOptions = ["TCS", "Infosys", "Wipro", "Google", "Microsoft", "Amazon", "Adobe", "Goldman Sachs", "Flipkart", "Cognizant", "Accenture", "Razorpay", "Paytm", "Swiggy", "Zomato", "HCL", "Tech Mahindra", "Capgemini"];
+const roundOptions = ["Technical", "HR", "Behavioral", "DSA", "System Design", "Operating Systems", "Computer Networks", "DBMS Viva", "Coding Challenge", "OOP Design"];
 const difficultyOptions = ["Easy", "Medium", "Hard"];
 
 /* ───────── Code Scratchpad Templates ───────── */

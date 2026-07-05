@@ -4,24 +4,24 @@ import { useState } from "react";
 
 /* ───────── Company Data ───────── */
 const companies = [
-  { name: "TCS", type: "Service", difficulty: "Medium", ctc: "3.6–7 LPA", questions: 250, logo: "T", gradient: "from-blue-600 to-blue-400" },
-  { name: "Infosys", type: "Service", difficulty: "Medium", ctc: "3.6–6 LPA", questions: 220, logo: "I", gradient: "from-cyan-600 to-cyan-400" },
-  { name: "Wipro", type: "Service", difficulty: "Easy", ctc: "3.5–5 LPA", questions: 180, logo: "W", gradient: "from-violet-600 to-violet-400" },
-  { name: "Google", type: "Product", difficulty: "Hard", ctc: "25–45 LPA", questions: 320, logo: "G", gradient: "from-red-500 to-yellow-400" },
-  { name: "Microsoft", type: "Product", difficulty: "Hard", ctc: "20–40 LPA", questions: 280, logo: "M", gradient: "from-emerald-500 to-teal-400" },
-  { name: "Amazon", type: "Product", difficulty: "Hard", ctc: "22–42 LPA", questions: 310, logo: "A", gradient: "from-amber-500 to-orange-400" },
-  { name: "Adobe", type: "Product", difficulty: "Hard", ctc: "18–35 LPA", questions: 200, logo: "Ad", gradient: "from-red-600 to-red-400" },
-  { name: "Goldman Sachs", type: "Product", difficulty: "Hard", ctc: "20–38 LPA", questions: 190, logo: "GS", gradient: "from-sky-600 to-sky-400" },
-  { name: "Flipkart", type: "Product", difficulty: "Hard", ctc: "18–32 LPA", questions: 210, logo: "F", gradient: "from-yellow-500 to-yellow-300" },
-  { name: "Cognizant", type: "Service", difficulty: "Medium", ctc: "4–8 LPA", questions: 160, logo: "C", gradient: "from-indigo-600 to-indigo-400" },
-  { name: "Accenture", type: "Service", difficulty: "Medium", ctc: "4.5–8 LPA", questions: 170, logo: "Ac", gradient: "from-purple-600 to-purple-400" },
-  { name: "Razorpay", type: "Product", difficulty: "Hard", ctc: "15–30 LPA", questions: 120, logo: "R", gradient: "from-blue-500 to-indigo-500" },
-  { name: "Paytm", type: "Product", difficulty: "Medium", ctc: "12–25 LPA", questions: 140, logo: "P", gradient: "from-sky-400 to-blue-400" },
-  { name: "Swiggy", type: "Product", difficulty: "Medium", ctc: "14–28 LPA", questions: 130, logo: "S", gradient: "from-orange-500 to-orange-300" },
-  { name: "Zomato", type: "Product", difficulty: "Medium", ctc: "14–26 LPA", questions: 125, logo: "Z", gradient: "from-red-500 to-pink-400" },
-  { name: "HCL", type: "Service", difficulty: "Easy", ctc: "3.5–6 LPA", questions: 150, logo: "H", gradient: "from-blue-700 to-blue-500" },
-  { name: "Tech Mahindra", type: "Service", difficulty: "Medium", ctc: "3.5–6 LPA", questions: 130, logo: "TM", gradient: "from-pink-600 to-pink-400" },
-  { name: "Capgemini", type: "Service", difficulty: "Medium", ctc: "4–7 LPA", questions: 145, logo: "Ca", gradient: "from-teal-600 to-teal-400" },
+  { name: "TCS", type: "Service", difficulty: "Medium", ctc: "3.6–7 LPA", coverage: "High", logo: "T", gradient: "from-blue-600 to-blue-400", topics: ["DSA", "OOP", "DBMS", "OS", "HR"], rounds: ["NQT Test", "Technical", "HR"] },
+  { name: "Infosys", type: "Service", difficulty: "Medium", ctc: "3.6–6 LPA", coverage: "High", logo: "I", gradient: "from-cyan-600 to-cyan-400", topics: ["DBMS", "OOP", "DSA", "OS", "CN"], rounds: ["Online Test", "Technical", "HR"] },
+  { name: "Wipro", type: "Service", difficulty: "Easy", ctc: "3.5–5 LPA", coverage: "High", logo: "W", gradient: "from-violet-600 to-violet-400", topics: ["OOP", "DSA", "OS", "CN", "HR"], rounds: ["Online Test", "Technical", "HR"] },
+  { name: "Google", type: "Product", difficulty: "Hard", ctc: "25–45 LPA", coverage: "High", logo: "G", gradient: "from-red-500 to-yellow-400", topics: ["DSA", "System Design", "Graphs", "DP", "Behavioral"], rounds: ["OA", "Phone Screen", "Onsite (4-5)"] },
+  { name: "Microsoft", type: "Product", difficulty: "Hard", ctc: "20–40 LPA", coverage: "High", logo: "M", gradient: "from-emerald-500 to-teal-400", topics: ["DSA", "Trees", "System Design", "OOP", "Behavioral"], rounds: ["OA", "Group Fly", "Technical (2-3)", "AA Round"] },
+  { name: "Amazon", type: "Product", difficulty: "Hard", ctc: "22–42 LPA", coverage: "High", logo: "A", gradient: "from-amber-500 to-orange-400", topics: ["DSA", "Leadership Principles", "System Design", "Behavioral"], rounds: ["OA + Workstyle", "Phone Screen", "Onsite Loop (4-5)"] },
+  { name: "Adobe", type: "Product", difficulty: "Hard", ctc: "18–35 LPA", coverage: "High", logo: "Ad", gradient: "from-red-600 to-red-400", topics: ["DSA", "OOP Design", "System Design", "Web Dev"], rounds: ["OA", "Technical (2)", "Hiring Manager"] },
+  { name: "Goldman Sachs", type: "Product", difficulty: "Hard", ctc: "20–38 LPA", coverage: "High", logo: "GS", gradient: "from-sky-600 to-sky-400", topics: ["DSA", "DBMS", "OS", "Puzzles", "System Design"], rounds: ["OA + MCQs", "Technical (2)", "Culture Fit"] },
+  { name: "Flipkart", type: "Product", difficulty: "Hard", ctc: "18–32 LPA", coverage: "High", logo: "F", gradient: "from-yellow-500 to-yellow-300", topics: ["DSA", "Machine Coding", "System Design", "DBMS"], rounds: ["OA", "Machine Coding", "DSA (2)", "HM Round"] },
+  { name: "Cognizant", type: "Service", difficulty: "Medium", ctc: "4–8 LPA", coverage: "High", logo: "C", gradient: "from-indigo-600 to-indigo-400", topics: ["OOP", "DBMS", "DSA", "OS", "HR"], rounds: ["GenC Test", "Technical", "HR"] },
+  { name: "Accenture", type: "Service", difficulty: "Medium", ctc: "4.5–8 LPA", coverage: "High", logo: "Ac", gradient: "from-purple-600 to-purple-400", topics: ["Aptitude", "Cloud", "Agile", "OOP", "HR"], rounds: ["Online Test", "Communication", "Technical", "HR"] },
+  { name: "Razorpay", type: "Product", difficulty: "Hard", ctc: "15–30 LPA", coverage: "High", logo: "R", gradient: "from-blue-500 to-indigo-500", topics: ["DSA", "System Design", "Payments", "DBMS"], rounds: ["OA", "Technical (2)", "Culture Fit"] },
+  { name: "Paytm", type: "Product", difficulty: "Medium", ctc: "12–25 LPA", coverage: "High", logo: "P", gradient: "from-sky-400 to-blue-400", topics: ["DSA", "Web Dev", "DBMS", "System Design"], rounds: ["OA", "Technical (2)", "HR"] },
+  { name: "Swiggy", type: "Product", difficulty: "Medium", ctc: "14–28 LPA", coverage: "High", logo: "S", gradient: "from-orange-500 to-orange-300", topics: ["DSA", "Machine Coding", "System Design", "Graphs"], rounds: ["OA", "Machine Coding", "DSA", "System Design", "Culture"] },
+  { name: "Zomato", type: "Product", difficulty: "Medium", ctc: "14–26 LPA", coverage: "High", logo: "Z", gradient: "from-red-500 to-pink-400", topics: ["DSA", "System Design", "DBMS", "Web Dev"], rounds: ["OA", "Technical (2)", "Manager Round"] },
+  { name: "HCL", type: "Service", difficulty: "Easy", ctc: "3.5–6 LPA", coverage: "High", logo: "H", gradient: "from-blue-700 to-blue-500", topics: ["Aptitude", "OOP", "DBMS", "OS", "CN"], rounds: ["Online Test", "Technical", "HR"] },
+  { name: "Tech Mahindra", type: "Service", difficulty: "Medium", ctc: "3.5–6 LPA", coverage: "High", logo: "TM", gradient: "from-pink-600 to-pink-400", topics: ["Aptitude", "OOP", "DBMS", "DSA"], rounds: ["Online Test", "Technical", "HR"] },
+  { name: "Capgemini", type: "Service", difficulty: "Medium", ctc: "4–7 LPA", coverage: "High", logo: "Ca", gradient: "from-teal-600 to-teal-400", topics: ["Aptitude", "DBMS", "OOP", "System Design"], rounds: ["Game-Based Test", "Technical", "HR"] },
 ];
 
 export default function CompaniesPage() {
@@ -74,7 +74,7 @@ export default function CompaniesPage() {
       <div>
         <h1 className="text-2xl font-bold text-white">Companies</h1>
         <p className="text-gray-400 mt-1">
-          Browse 5,000+ real interview questions from 30+ companies.
+          AI-powered interview prep covering 18 companies with RAG-enhanced question banks.
         </p>
       </div>
 
@@ -208,9 +208,18 @@ export default function CompaniesPage() {
               </h3>
               <p className="text-xs text-gray-500 mt-1">Avg CTC: {company.ctc}</p>
 
-              <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
-                <span className="text-sm text-gray-400">
-                  <span className="text-white font-semibold">{company.questions}</span> questions
+              {/* Topics */}
+              <div className="flex flex-wrap gap-1 mt-3">
+                {company.topics.slice(0, 4).map((t) => (
+                  <span key={t} className="text-[10px] font-medium bg-white/5 text-gray-400 px-1.5 py-0.5 rounded">{t}</span>
+                ))}
+                {company.topics.length > 4 && <span className="text-[10px] text-gray-600">+{company.topics.length - 4}</span>}
+              </div>
+
+              {/* Rounds & Explore */}
+              <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">
+                <span className="text-[10px] text-gray-500">
+                  {company.rounds.length} rounds • {company.coverage} coverage
                 </span>
                 <button
                   onClick={(e) => {

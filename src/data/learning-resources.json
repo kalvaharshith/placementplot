@@ -1,22 +1,102 @@
 [
   {
-    "content": "Data Structures & Algorithms Course: Abdul Bari's Algorithms course on Udemy or YouTube is excellent for mastering time complexity analysis, recursion, divide-and-conquer, dynamic programming, and graph algorithms. This course is highly recommended for building solid foundational concepts.",
-    "metadata": { "topic": "dsa", "platform": "YouTube", "difficulty": "Beginner to Intermediate" }
+    "content": "Learning Resource — Data Structures & Algorithms (Beginner to Advanced):\nTitle: Striver's A2Z DSA Course/Sheet\nDescription: The most comprehensive DSA preparation resource for Indian placements. Covers 450+ problems organized by topic: Arrays, Strings, Linked Lists, Stacks, Queues, Trees, Graphs, Dynamic Programming, Greedy, Backtracking, Bit Manipulation. Each topic has theory + practice problems with video explanations. Follow the sheet sequentially for best results.\nPlatform: takeuforward.org / YouTube (take U forward)\nDifficulty: Beginner to Advanced\nEstimated Time: 3-6 months (2-3 hours/day)",
+    "metadata": { "topic": "dsa", "source": "Striver / take U forward", "url": "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2" }
   },
   {
-    "content": "DSA Practice Platform: LeetCode. Solve the 'LeetCode 75' or 'NeetCode 150' lists. Focus on patterns: Two Pointers, Sliding Window, Fast & Slow Pointers, Merge Intervals, Tree BFS/DFS, Graph BFS/DFS, and 1D/2D Dynamic Programming.",
-    "metadata": { "topic": "dsa", "platform": "LeetCode", "difficulty": "Intermediate to Hard" }
+    "content": "Learning Resource — Data Structures & Algorithms:\nTitle: NeetCode 150 / NeetCode Roadmap\nDescription: Curated list of 150 LeetCode problems covering all essential patterns for FAANG interviews. Problems are organized by pattern (Two Pointers, Sliding Window, Binary Search, Trees, Graphs, DP, etc.) with free video explanations. The roadmap visual shows dependencies between topics. Ideal for targeted practice when you have limited time.\nPlatform: neetcode.io / YouTube (NeetCode)\nDifficulty: Medium to Hard\nEstimated Time: 2-3 months",
+    "metadata": { "topic": "dsa", "source": "NeetCode", "url": "https://neetcode.io/roadmap" }
   },
   {
-    "content": "Aptitude & Logical Reasoning Preparation: IndiaBIX or PrepInsta. Practice Quantitative Aptitude (Time & Work, Speed & Distance, Percentages, Ratios) and Logical Reasoning daily for service company exams (TCS NQT, Infosys, Wipro).",
-    "metadata": { "topic": "aptitude", "platform": "IndiaBIX", "difficulty": "Easy to Medium" }
+    "content": "Learning Resource — Data Structures & Algorithms:\nTitle: LeetCode Problem Practice\nDescription: The gold standard platform for coding interview practice. Features 3000+ problems with company tags, difficulty levels, and discussion forums. Key strategy: Sort by company tags, solve 'Top Interview Questions' list first, then target specific companies. Use the study plans feature for structured practice (LeetCode 75, Top Interview 150). Premium gives access to company-specific frequently asked questions.\nPlatform: leetcode.com\nDifficulty: Easy to Hard\nEstimated Time: Ongoing practice",
+    "metadata": { "topic": "dsa", "source": "LeetCode", "url": "https://leetcode.com/studyplan/top-interview-150/" }
   },
   {
-    "content": "System Design: 'Designing Data-Intensive Applications' by Martin Kleppmann (book) and Alex Xu's System Design Interview (volumes 1 & 2). Crucial for Senior or Product SDE roles at Amazon, Google, Microsoft.",
-    "metadata": { "topic": "system_design", "platform": "Book", "difficulty": "Hard" }
+    "content": "Learning Resource — Database Management Systems (DBMS):\nTitle: DBMS Complete Course — Gate Smashers\nDescription: Comprehensive DBMS course covering ER Model, Relational Model, Normalization (1NF to BCNF), SQL queries, Transactions (ACID), Concurrency Control, Indexing (B-Trees), and File Organization. Each topic explained with diagrams and examples. Excellent for both interview prep and semester exams. Follow up with SQL practice on HackerRank/LeetCode SQL.\nPlatform: YouTube (Gate Smashers)\nDifficulty: Beginner to Intermediate\nEstimated Time: 2-3 weeks",
+    "metadata": { "topic": "dbms", "source": "Gate Smashers", "url": "https://youtube.com/playlist?list=PLxCzCOWd7aiFAN6I8CuViBuCdJgiOkT2Y" }
   },
   {
-    "content": "SQL and Database Practice: LeetCode SQL 50 study plan and w3schools SQL tutorials. Focus on JOINs, GROUP BY, HAVING, subqueries, and window functions (ROW_NUMBER, DENSE_RANK), which are heavily tested by Infosys, TCS, and Amazon.",
-    "metadata": { "topic": "dbms", "platform": "LeetCode", "difficulty": "Medium" }
+    "content": "Learning Resource — DBMS / SQL Practice:\nTitle: SQL Practice — HackerRank SQL Domain\nDescription: 50+ SQL challenges organized by difficulty (Easy/Medium/Hard) covering SELECT, JOIN, Aggregation, Advanced queries, and Subqueries. Great for hands-on practice. Also try LeetCode SQL 50 study plan and Mode Analytics SQL Tutorial for real-world query patterns. Master these patterns: GROUP BY + HAVING, Window Functions (ROW_NUMBER, RANK), CTEs, Self-Joins, Correlated Subqueries.\nPlatform: hackerrank.com/domains/sql\nDifficulty: Easy to Hard\nEstimated Time: 1-2 weeks",
+    "metadata": { "topic": "dbms", "source": "HackerRank", "url": "https://www.hackerrank.com/domains/sql" }
+  },
+  {
+    "content": "Learning Resource — Operating Systems:\nTitle: Operating Systems — Neso Academy\nDescription: Complete OS course covering Process Management (scheduling algorithms, process synchronization), Memory Management (paging, segmentation, virtual memory), Deadlocks (detection, prevention, avoidance), File Systems, and I/O Systems. Clear explanations with visual diagrams. Supplement with Gate Smashers OS playlist for additional problem-solving practice.\nPlatform: YouTube (Neso Academy)\nDifficulty: Beginner to Intermediate\nEstimated Time: 3-4 weeks",
+    "metadata": { "topic": "os", "source": "Neso Academy", "url": "https://youtube.com/playlist?list=PLBlnK6fEyqRiVhbXDGLXDk_OQAdc0cPiS" }
+  },
+  {
+    "content": "Learning Resource — Operating Systems (Interview Focused):\nTitle: OS Interview Preparation — InterviewBit\nDescription: Concise, interview-focused OS notes covering the most frequently asked topics: Process vs Thread, CPU Scheduling (FCFS, SJF, RR, Priority), Deadlock conditions and handling, Paging vs Segmentation, Virtual Memory, Page Replacement algorithms (LRU, FIFO, Optimal), Semaphores vs Mutex, and Producer-Consumer problem. Perfect for quick revision before interviews.\nPlatform: interviewbit.com\nDifficulty: Intermediate\nEstimated Time: 1 week (revision)",
+    "metadata": { "topic": "os", "source": "InterviewBit", "url": "https://www.interviewbit.com/operating-system-interview-questions/" }
+  },
+  {
+    "content": "Learning Resource — Computer Networks:\nTitle: Computer Networks — Kunal Kushwaha / Gate Smashers\nDescription: Complete CN course covering OSI and TCP/IP models, IP addressing and subnetting, TCP vs UDP, HTTP/HTTPS, DNS, DHCP, ARP, routing algorithms, network security (firewalls, encryption), and socket programming. Focus on understanding the flow: what happens when you type a URL in the browser. This is the most asked CN question in interviews.\nPlatform: YouTube (Gate Smashers / Kunal Kushwaha)\nDifficulty: Beginner to Intermediate\nEstimated Time: 2-3 weeks",
+    "metadata": { "topic": "cn", "source": "Gate Smashers", "url": "https://youtube.com/playlist?list=PLxCzCOWd7aiGFBD2-2joCpWOLUrDLvVV_" }
+  },
+  {
+    "content": "Learning Resource — System Design:\nTitle: System Design Primer — Gaurav Sen + Alex Xu\nDescription: Start with Gaurav Sen's YouTube channel for intuitive explanations of distributed systems concepts (load balancing, caching, database sharding, message queues). Then read 'System Design Interview' by Alex Xu for structured approach. Key topics: URL shortener, chat system, news feed, notification system, rate limiter, web crawler. Focus on understanding tradeoffs, not memorizing solutions.\nPlatform: YouTube (Gaurav Sen) + Book (Alex Xu)\nDifficulty: Intermediate to Advanced\nEstimated Time: 4-8 weeks",
+    "metadata": { "topic": "system_design", "source": "Gaurav Sen / Alex Xu", "url": "https://youtube.com/c/GauravSensei" }
+  },
+  {
+    "content": "Learning Resource — System Design:\nTitle: System Design GitHub Repository\nDescription: The 'system-design-primer' GitHub repo by Donnemartin is a comprehensive open-source guide covering scalability, availability, consistency patterns, load balancing, caching, CDN, database (SQL vs NoSQL), message queues, and real-world system designs. Includes flashcards for revision. Over 250K stars — the most popular system design resource on GitHub.\nPlatform: GitHub\nDifficulty: Intermediate to Advanced\nEstimated Time: Self-paced reference",
+    "metadata": { "topic": "system_design", "source": "GitHub - donnemartin", "url": "https://github.com/donnemartin/system-design-primer" }
+  },
+  {
+    "content": "Learning Resource — Object-Oriented Programming:\nTitle: OOP Concepts — Complete Guide for Interviews\nDescription: Master the 4 pillars: Encapsulation, Abstraction, Inheritance, Polymorphism. Learn SOLID principles, common design patterns (Singleton, Factory, Observer, Strategy, Builder), and practice OOP design problems (design a parking lot, library system, chess game). Use Java or C++ for practice as they're the most OOP-friendly interview languages. Focus on 'why' not just 'what' — understand when to use each pattern.\nPlatform: GeeksforGeeks + YouTube (CodeWithHarry / Telusko)\nDifficulty: Beginner to Intermediate\nEstimated Time: 2 weeks",
+    "metadata": { "topic": "oop", "source": "GeeksforGeeks", "url": "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/" }
+  },
+  {
+    "content": "Learning Resource — OOP Design / Low-Level Design:\nTitle: Low-Level Design (LLD) Problems\nDescription: Practice designing class hierarchies for real-world systems. Top LLD problems: Parking Lot, Elevator System, Library Management, Tic-Tac-Toe, Snake & Ladder, Expense Tracker, Hotel Booking, Vending Machine. Focus on identifying classes, relationships, SOLID principles, and design patterns. Critical for Flipkart, Amazon, and Adobe interviews which often have machine coding rounds.\nPlatform: GitHub (ashishps1/awesome-low-level-design) + YouTube\nDifficulty: Intermediate\nEstimated Time: 2-3 weeks",
+    "metadata": { "topic": "oop", "source": "GitHub", "url": "https://github.com/ashishps1/awesome-low-level-design" }
+  },
+  {
+    "content": "Learning Resource — Web Development (Frontend):\nTitle: Full Stack Open — University of Helsinki\nDescription: Free, university-grade course covering modern full-stack web development: React, Redux, Node.js, MongoDB, GraphQL, TypeScript, React Native, and CI/CD. Hands-on project-based learning. One of the most comprehensive free web dev courses available. Perfect for building strong project portfolio for resume.\nPlatform: fullstackopen.com\nDifficulty: Beginner to Advanced\nEstimated Time: 3-4 months",
+    "metadata": { "topic": "web_development", "source": "University of Helsinki", "url": "https://fullstackopen.com/en/" }
+  },
+  {
+    "content": "Learning Resource — Web Development (Backend):\nTitle: Node.js & Express.js — Building REST APIs\nDescription: Learn backend development with Node.js and Express. Cover: HTTP server basics, routing, middleware, REST API design, authentication (JWT, OAuth), database integration (MongoDB with Mongoose, PostgreSQL with Prisma/Sequelize), error handling, and deployment. Build at least 2 full backend projects for your resume. Follow Traversy Media or The Net Ninja for project-based tutorials.\nPlatform: YouTube (Traversy Media / The Net Ninja)\nDifficulty: Beginner to Intermediate\nEstimated Time: 3-4 weeks",
+    "metadata": { "topic": "web_development", "source": "Traversy Media", "url": "https://youtube.com/c/TraversyMedia" }
+  },
+  {
+    "content": "Learning Resource — Aptitude & Quantitative Reasoning:\nTitle: Aptitude Preparation — IndiaBIX + PrepInsta\nDescription: Practice quantitative aptitude (Number Systems, Percentages, Profit & Loss, Time & Work, Time & Distance, Probability, Permutations & Combinations), logical reasoning (Blood Relations, Seating Arrangement, Coding-Decoding, Syllogisms), and verbal ability (Reading Comprehension, Sentence Correction, Para Jumbles). Critical for TCS NQT, Infosys, Wipro, Cognizant, and Accenture screening rounds.\nPlatform: indiabix.com + prepinsta.com\nDifficulty: Easy to Medium\nEstimated Time: 2-4 weeks (daily practice)",
+    "metadata": { "topic": "aptitude", "source": "IndiaBIX / PrepInsta", "url": "https://www.indiabix.com/" }
+  },
+  {
+    "content": "Learning Resource — Aptitude:\nTitle: TCS NQT Previous Year Papers\nDescription: Practice with actual TCS NQT question patterns. The NQT is the gateway to TCS campus hiring. Sections: Verbal Ability (reading comprehension, error detection), Quantitative Aptitude (algebra, arithmetic, geometry), Reasoning (pattern recognition, logical puzzles), Programming Logic (pseudo-code tracing, output prediction), Coding (1-2 problems in C/Java/Python). PrepInsta and GeeksforGeeks have extensive question banks.\nPlatform: PrepInsta + GeeksforGeeks\nDifficulty: Easy to Medium\nEstimated Time: 1-2 weeks focused practice",
+    "metadata": { "topic": "aptitude", "source": "PrepInsta", "url": "https://prepinsta.com/tcs-nqt/" }
+  },
+  {
+    "content": "Learning Resource — Soft Skills & Communication:\nTitle: Interview Communication & Soft Skills\nDescription: Practice articulating technical concepts clearly. Key areas: 'Tell me about yourself' (2-minute formula: Present → Past → Future), STAR method for behavioral questions (Situation, Task, Action, Result), handling 'weakness' questions, salary negotiation basics, body language tips for video interviews. Record yourself answering questions and review. Practice with peers through mock interviews.\nPlatform: YouTube (Dan Croitor / Jeff Su) + PlacementPlot AI Mock Interviews\nDifficulty: All levels\nEstimated Time: Ongoing practice",
+    "metadata": { "topic": "soft_skills", "source": "Various", "url": "https://youtube.com/c/DanCroitor" }
+  },
+  {
+    "content": "Learning Resource — Competitive Programming:\nTitle: Competitive Programming — Codeforces & CodeChef\nDescription: Participate in regular contests to build speed and problem-solving under pressure. Start with CodeChef's Beginner contests (Div 3/4), then move to Codeforces Div 2. Focus on contest-specific skills: fast I/O, template setup, debugging under time pressure. Key topics: Number Theory, Combinatorics, Segment Trees, Binary Indexed Trees, String Algorithms (KMP, Z-function). Top competitive programmers are highly valued at Google, Facebook, and product companies.\nPlatform: codeforces.com + codechef.com\nDifficulty: Medium to Hard\nEstimated Time: Ongoing (weekly contests)",
+    "metadata": { "topic": "competitive_programming", "source": "Codeforces / CodeChef", "url": "https://codeforces.com/" }
+  },
+  {
+    "content": "Learning Resource — Resume Building:\nTitle: Resume Writing Guide for Tech Roles\nDescription: Build an ATS-friendly resume that passes automated screening. Key rules: One page for freshers, reverse chronological order, quantify achievements (use numbers/percentages), use action verbs (Developed, Implemented, Optimized), include GitHub + LinkedIn links, tailor keywords to job description. Use Jake's Resume template (LaTeX) or Overleaf templates. Get feedback from PlacementPlot AI's Resume Analyzer.\nPlatform: Overleaf (templates) + PlacementPlot AI\nDifficulty: All levels\nEstimated Time: 2-3 days to create, ongoing refinement",
+    "metadata": { "topic": "resume_building", "source": "Overleaf / PlacementPlot AI", "url": "https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs" }
+  },
+  {
+    "content": "Learning Resource — Behavioral Interview Preparation:\nTitle: Amazon Leadership Principles & STAR Method\nDescription: Amazon-style behavioral interviews are now common across all product companies. Prepare 8-10 STAR stories covering: Leadership, Teamwork, Conflict Resolution, Failure/Learning, Innovation, Customer Focus, Working Under Pressure, Taking Ownership. Each story should be 2-3 minutes with specific details and measurable results. Practice with: 'Tell me about a time when...' format. Companies that heavily test behavioral: Amazon, Microsoft, Google, Flipkart.\nPlatform: YouTube (Dan Croitor) + Amazon.jobs/principles\nDifficulty: Medium\nEstimated Time: 1-2 weeks preparation",
+    "metadata": { "topic": "behavioral_prep", "source": "Amazon / Dan Croitor", "url": "https://www.amazon.jobs/en/principles" }
+  },
+  {
+    "content": "Learning Resource — Git & Version Control:\nTitle: Git & GitHub for Developers\nDescription: Essential skill for every developer. Learn: git init, add, commit, push, pull, branch, merge, rebase, cherry-pick, stash, reset, revert. Understand branching strategies (Git Flow, GitHub Flow). Practice resolving merge conflicts. Set up a GitHub profile with pinned repositories, clean commit messages, and descriptive READMEs. Contribution graph (green squares) shows consistency to recruiters.\nPlatform: YouTube (Kunal Kushwaha / freeCodeCamp) + GitHub Docs\nDifficulty: Beginner\nEstimated Time: 1 week",
+    "metadata": { "topic": "software_engineering", "source": "Kunal Kushwaha", "url": "https://youtube.com/watch?v=apGV9Kg7ics" }
+  },
+  {
+    "content": "Learning Resource — Cloud Computing Basics:\nTitle: AWS Cloud Practitioner / Azure Fundamentals\nDescription: Cloud knowledge is increasingly important for placements. Start with AWS Cloud Practitioner (CLF-C02) or Azure Fundamentals (AZ-900) certification. Learn core concepts: EC2 (compute), S3 (storage), RDS (databases), Lambda (serverless), VPC (networking), IAM (security). Free tier available for hands-on practice. Cloud certifications on your resume significantly boost your profile for service companies (TCS, Infosys, Accenture, Capgemini).\nPlatform: AWS Skill Builder (free) / Microsoft Learn (free)\nDifficulty: Beginner\nEstimated Time: 2-3 weeks",
+    "metadata": { "topic": "cloud_computing", "source": "AWS / Microsoft", "url": "https://explore.skillbuilder.aws/learn/course/external/view/elearning/134/aws-cloud-practitioner-essentials" }
+  },
+  {
+    "content": "Learning Resource — Machine Learning Foundations:\nTitle: Machine Learning by Andrew Ng (Stanford)\nDescription: The gold standard ML course. Covers: Linear Regression, Logistic Regression, Neural Networks, SVMs, K-Means Clustering, PCA, Anomaly Detection, Recommender Systems. Updated 2022 version uses Python (previously MATLAB). Even if you're not pursuing ML, basic knowledge helps in product company interviews. Follow up with Kaggle competitions for practical experience.\nPlatform: Coursera (Stanford Online)\nDifficulty: Intermediate\nEstimated Time: 3-4 months (4-5 hours/week)",
+    "metadata": { "topic": "ml_ai", "source": "Andrew Ng / Stanford", "url": "https://www.coursera.org/specializations/machine-learning-introduction" }
+  },
+  {
+    "content": "Learning Resource — Docker & DevOps Basics:\nTitle: Docker for Beginners — TechWorld with Nana\nDescription: Learn containerization basics essential for modern development. Cover: Docker images, containers, Dockerfile, docker-compose, volumes, networks. Then learn basic Kubernetes concepts: pods, deployments, services. DevOps knowledge is a strong differentiator in interviews. Build a project using Docker (containerize a Node.js app + PostgreSQL + Redis) for your resume.\nPlatform: YouTube (TechWorld with Nana)\nDifficulty: Intermediate\nEstimated Time: 2 weeks",
+    "metadata": { "topic": "devops", "source": "TechWorld with Nana", "url": "https://youtube.com/c/TechWorldwithNana" }
+  },
+  {
+    "content": "Learning Resource — Placement Strategy & Roadmap:\nTitle: Complete Placement Preparation Strategy\nDescription: Structured approach to placement prep: Month 1-2: Master one programming language + basic DSA (arrays, strings, sorting). Month 3-4: Intermediate DSA (trees, graphs, DP) + DBMS + OS fundamentals. Month 5: System Design basics + OOP design + CN fundamentals. Month 6: Mock interviews + resume optimization + company-specific practice. Throughout: Build 2-3 strong projects, maintain GitHub, practice aptitude weekly. Use PlacementPlot AI for mock interviews and resume analysis.\nPlatform: PlacementPlot AI + Various Resources\nDifficulty: All levels\nEstimated Time: 6 months comprehensive plan",
+    "metadata": { "topic": "placement_strategy", "source": "PlacementPlot AI", "url": "https://placementplot.ai" }
   }
 ]

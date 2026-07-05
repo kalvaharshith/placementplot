@@ -1,26 +1,166 @@
 [
   {
-    "content": "Engineered a distributed real-time messaging pipeline using Next.js, Node.js, and Redis Pub/Sub, scaling daily message throughput by 150% and reducing end-to-end latency to less than 50ms for 50,000+ concurrent active connections.",
-    "metadata": { "role": "Software Engineer", "category": "backend", "framework": "STAR" }
+    "content": "Resume Bullet Example (Backend): Designed and implemented a RESTful API using Node.js and Express.js, serving 15+ endpoints for user authentication, product catalog, and order management, reducing frontend-backend integration time by 40%.",
+    "metadata": { "role": "software_engineer", "category": "backend", "framework": "XYZ" }
   },
   {
-    "content": "Architected database schema optimization and query caching strategies in PostgreSQL and Redis, lowering median query latency by 40% and cutting infrastructure server CPU utilization from 78% to 32% under peak workloads.",
-    "metadata": { "role": "Backend Engineer", "category": "database", "framework": "XYZ" }
+    "content": "Resume Bullet Example (Backend): Architected a microservices-based backend using Spring Boot and Docker, decomposing a monolithic application into 5 independently deployable services, improving deployment frequency from monthly to weekly.",
+    "metadata": { "role": "software_engineer", "category": "backend", "framework": "XYZ" }
   },
   {
-    "content": "Spearheaded the redesign of the core dashboard interface using React, TailwindCSS, and Next.js App Router, resulting in a 35% improvement in Lighthouse performance scores and boosting user session duration by 22%.",
-    "metadata": { "role": "Frontend Engineer", "category": "frontend", "framework": "STAR" }
+    "content": "Resume Bullet Example (Backend): Optimized PostgreSQL database queries by implementing proper indexing and query restructuring, reducing average API response time from 2.1 seconds to 340 milliseconds (84% improvement).",
+    "metadata": { "role": "software_engineer", "category": "database", "framework": "PAR" }
   },
   {
-    "content": "Automated CI/CD deployment pipelines on AWS using GitHub Actions, Docker, and Kubernetes (EKS), reducing deployment cycle time by 75% and achieving zero-downtime rollouts across 4 production services.",
-    "metadata": { "role": "DevOps Engineer", "category": "cloud", "framework": "XYZ" }
+    "content": "Resume Bullet Example (Frontend): Built a responsive single-page application using React.js and Redux, implementing lazy loading and code splitting that reduced initial bundle size by 55% and improved Lighthouse performance score from 42 to 91.",
+    "metadata": { "role": "frontend_engineer", "category": "frontend", "framework": "XYZ" }
   },
   {
-    "content": "Designed and implemented a customizable dashboard component library using Radix UI and TypeScript, decreasing frontend developer onboarding time by 30% and standardizing visual styling across 3 micro-frontend applications.",
-    "metadata": { "role": "Frontend Engineer", "category": "design_system", "framework": "STAR" }
+    "content": "Resume Bullet Example (Frontend): Developed a real-time collaborative dashboard using React, WebSocket, and D3.js, enabling 50+ concurrent users to view live data visualizations with sub-100ms update latency.",
+    "metadata": { "role": "frontend_engineer", "category": "frontend", "framework": "XYZ" }
   },
   {
-    "content": "Refactored legacy Monolith architecture into Java Spring Boot microservices, improving system fault tolerance by isolating service failures and cutting overall AWS deployment billing cost by 18% via container right-sizing.",
-    "metadata": { "role": "SDE-2", "category": "architecture", "framework": "XYZ" }
+    "content": "Resume Bullet Example (Frontend): Implemented a design system with 25+ reusable UI components using React and Storybook, reducing new feature development time by 30% and ensuring visual consistency across 8 product pages.",
+    "metadata": { "role": "frontend_engineer", "category": "design_system", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Fullstack): Developed a full-stack e-commerce platform using Next.js, Node.js, and MongoDB, featuring user authentication (JWT), product search with filters, shopping cart, and Razorpay payment integration, serving 500+ registered users.",
+    "metadata": { "role": "fullstack_engineer", "category": "fullstack", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Fullstack): Built and deployed a campus event management system using React, Express.js, and PostgreSQL on AWS EC2, automating event registration for 2,000+ students and reducing manual coordination effort by 70%.",
+    "metadata": { "role": "fullstack_engineer", "category": "fullstack", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Database): Designed and normalized a relational database schema (3NF) for a hospital management system with 12 tables and 30+ relationships, implementing stored procedures for appointment scheduling that reduced booking conflicts by 95%.",
+    "metadata": { "role": "software_engineer", "category": "database", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Database): Migrated legacy MySQL database to PostgreSQL, writing custom migration scripts for 500K+ records while implementing connection pooling (HikariCP) that improved concurrent query handling by 3x.",
+    "metadata": { "role": "software_engineer", "category": "database", "framework": "PAR" }
+  },
+  {
+    "content": "Resume Bullet Example (Cloud): Deployed a containerized Node.js application on AWS using Docker, ECS, and Application Load Balancer, configuring auto-scaling policies that handled 3x traffic spikes during peak hours without manual intervention.",
+    "metadata": { "role": "devops_engineer", "category": "cloud", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Cloud): Set up a CI/CD pipeline using GitHub Actions, automating build, test, and deployment processes that reduced deployment time from 45 minutes (manual) to 8 minutes (automated) with zero-downtime deployments.",
+    "metadata": { "role": "devops_engineer", "category": "cloud", "framework": "PAR" }
+  },
+  {
+    "content": "Resume Bullet Example (Cloud): Configured AWS infrastructure (EC2, S3, RDS, CloudFront) using Terraform for Infrastructure as Code, enabling reproducible environment setup and reducing infrastructure provisioning time from 2 hours to 15 minutes.",
+    "metadata": { "role": "devops_engineer", "category": "cloud", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Mobile): Developed a cross-platform fitness tracking app using React Native, integrating device sensors (accelerometer, GPS) and Firebase for real-time data sync, achieving 4.5-star rating with 1,000+ downloads on Google Play Store.",
+    "metadata": { "role": "mobile_developer", "category": "mobile", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Mobile): Built an offline-first note-taking application using Flutter and SQLite with cloud sync (Firestore), implementing conflict resolution for multi-device usage and achieving 98% crash-free rate across 500+ active users.",
+    "metadata": { "role": "mobile_developer", "category": "mobile", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (ML/AI): Developed a sentiment analysis model using Python, NLTK, and scikit-learn, training on 50K product reviews to achieve 87% accuracy in classifying positive/negative/neutral sentiments, deployed as a Flask REST API.",
+    "metadata": { "role": "ml_engineer", "category": "ml_ai", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (ML/AI): Built an image classification system using TensorFlow and Convolutional Neural Networks (CNN), achieving 94% accuracy on a custom dataset of 10,000 images across 15 categories, with inference time under 50ms per image.",
+    "metadata": { "role": "ml_engineer", "category": "ml_ai", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (ML/AI): Implemented a recommendation engine using collaborative filtering (matrix factorization) in Python, improving product discovery click-through rate by 25% compared to the previous rule-based system.",
+    "metadata": { "role": "data_scientist", "category": "ml_ai", "framework": "PAR" }
+  },
+  {
+    "content": "Resume Bullet Example (Data Engineering): Designed and implemented an ETL pipeline using Apache Airflow and PySpark, processing 2M+ daily records from 5 data sources into a PostgreSQL data warehouse, reducing report generation time from 4 hours to 20 minutes.",
+    "metadata": { "role": "data_engineer", "category": "data_engineering", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Data Engineering): Built a real-time data streaming pipeline using Apache Kafka and Spark Streaming, processing 10K events per second for live dashboard analytics with end-to-end latency under 3 seconds.",
+    "metadata": { "role": "data_engineer", "category": "data_engineering", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Testing): Implemented comprehensive test suite using Jest and React Testing Library, achieving 85% code coverage across 40+ React components and reducing production bugs by 60% over 3 months.",
+    "metadata": { "role": "qa_engineer", "category": "testing", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Testing): Designed and executed an end-to-end test automation framework using Cypress, covering 120+ user flows and reducing manual regression testing effort from 3 days to 4 hours per release cycle.",
+    "metadata": { "role": "qa_engineer", "category": "testing", "framework": "PAR" }
+  },
+  {
+    "content": "Resume Bullet Example (Architecture): Led the migration from a monolithic Django application to a microservices architecture using FastAPI and Kubernetes, improving system reliability from 99.2% to 99.9% uptime and enabling independent service scaling.",
+    "metadata": { "role": "senior_engineer", "category": "architecture", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Architecture): Designed a caching strategy using Redis (read-through + write-behind), reducing database load by 70% and improving p95 API response time from 800ms to 120ms for high-traffic product listing endpoints.",
+    "metadata": { "role": "senior_engineer", "category": "architecture", "framework": "PAR" }
+  },
+  {
+    "content": "Resume Bullet Example (Security): Implemented OAuth 2.0 authentication flow with JWT refresh tokens and RBAC (Role-Based Access Control) for a multi-tenant SaaS application, passing security audit with zero critical findings.",
+    "metadata": { "role": "software_engineer", "category": "security", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Security): Conducted a security review identifying 8 vulnerabilities (SQL injection, XSS, CSRF), implementing fixes including parameterized queries, CSP headers, and CSRF tokens, eliminating all OWASP Top 10 risks.",
+    "metadata": { "role": "security_engineer", "category": "security", "framework": "PAR" }
+  },
+  {
+    "content": "Resume Bullet Example (Leadership): Led a 4-member team in a 48-hour hackathon, delegating tasks based on individual strengths and managing sprint timeline, resulting in 1st place finish out of 35 competing teams.",
+    "metadata": { "role": "team_lead", "category": "leadership", "framework": "STAR" }
+  },
+  {
+    "content": "Resume Bullet Example (Leadership): Mentored 6 junior developers through weekly code reviews and pair programming sessions, improving team's average PR approval time from 3 days to 1 day and reducing code-related production incidents by 45%.",
+    "metadata": { "role": "senior_engineer", "category": "leadership", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Research): Published a research paper on 'Efficient Cache Replacement Policies for Edge Computing' at IEEE International Conference, proposing a novel algorithm that improved cache hit ratio by 15% compared to LRU baseline.",
+    "metadata": { "role": "research_engineer", "category": "research", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Open Source): Contributed 12 pull requests to an open-source React component library (5K+ GitHub stars), fixing accessibility issues and adding TypeScript support, with 3 PRs featured in the project's changelog.",
+    "metadata": { "role": "software_engineer", "category": "open_source", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (API): Designed and documented a GraphQL API schema with 40+ types and resolvers using Apollo Server, implementing DataLoader for N+1 query optimization and reducing average query response time by 65% compared to the REST predecessor.",
+    "metadata": { "role": "backend_engineer", "category": "backend", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (DevOps): Implemented Kubernetes-based container orchestration for 8 microservices, configuring horizontal pod autoscaling, health checks, and rolling deployments that achieved zero-downtime releases and 99.95% service availability.",
+    "metadata": { "role": "devops_engineer", "category": "cloud", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Performance): Profiled and optimized a CPU-intensive image processing pipeline using multi-threading and SIMD instructions, reducing batch processing time for 10,000 images from 45 minutes to 8 minutes (82% improvement).",
+    "metadata": { "role": "software_engineer", "category": "backend", "framework": "PAR" }
+  },
+  {
+    "content": "Resume Bullet Example (Internship): Developed a customer feedback analysis tool during summer internship at [Company], processing 5,000+ monthly support tickets using NLP (spaCy) to automatically categorize and route issues, reducing manual triage time by 50%.",
+    "metadata": { "role": "intern", "category": "ml_ai", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Internship): Built an internal admin dashboard using React and Django REST Framework during internship, enabling the ops team to monitor 20+ KPIs in real-time and reducing weekly reporting effort from 6 hours to 30 minutes.",
+    "metadata": { "role": "intern", "category": "fullstack", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Hackathon): Won 'Best Innovation' award at [Hackathon Name] by building a real-time sign language translator using MediaPipe and TensorFlow.js, achieving 92% gesture recognition accuracy in a browser-based demo.",
+    "metadata": { "role": "student", "category": "ml_ai", "framework": "STAR" }
+  },
+  {
+    "content": "Resume Bullet Example (Academic Project): Implemented a mini operating system kernel in C, featuring process scheduling (Round Robin), memory management (paging with page replacement), and a basic file system, demonstrating understanding of OS internals.",
+    "metadata": { "role": "student", "category": "architecture", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Academic Project): Built a distributed chat application using Java Sockets and multi-threading, supporting 50+ concurrent users with features including private messaging, group chats, and message encryption (AES-256).",
+    "metadata": { "role": "student", "category": "backend", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Competitive Programming): Solved 400+ problems on LeetCode (200 Medium, 80 Hard) and achieved Knight rating on Codeforces (1600+), with strong expertise in dynamic programming, graph algorithms, and greedy techniques.",
+    "metadata": { "role": "student", "category": "competitive_programming", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Freelance): Delivered 5 freelance web development projects on Fiverr with 5-star client ratings, building responsive websites using React, Next.js, and Tailwind CSS with SEO optimization, generating $2,000+ in revenue.",
+    "metadata": { "role": "freelancer", "category": "fullstack", "framework": "XYZ" }
+  },
+  {
+    "content": "Resume Bullet Example (Teaching): Created and published a YouTube tutorial series on 'DSA with Java' (25 videos), accumulating 15,000+ views and helping 500+ students prepare for campus placements, demonstrating strong communication and teaching abilities.",
+    "metadata": { "role": "educator", "category": "leadership", "framework": "XYZ" }
   }
 ]

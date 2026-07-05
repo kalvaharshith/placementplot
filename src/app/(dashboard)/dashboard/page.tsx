@@ -417,6 +417,42 @@ export default function DashboardPage() {
               ))}
             </div>
           </div>
+
+          {/* Daily Placement Tip */}
+          <div className="glass-card rounded-xl p-5 border border-primary-500/10 bg-gradient-to-br from-primary-500/[0.03] to-accent-500/[0.03]">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-lg">💡</span>
+              <h2 className="text-sm font-semibold text-primary-400">Daily Placement Tip</h2>
+            </div>
+            {(() => {
+              const tips = [
+                { tip: "Practice 2-3 DSA problems daily. Consistency beats cramming — 100 problems over 2 months is better than 100 in 3 days.", category: "DSA" },
+                { tip: "Tailor your resume for each company. Mirror keywords from the job description to improve your ATS match score by 30-50%.", category: "Resume" },
+                { tip: "In interviews, always think out loud. Interviewers evaluate your problem-solving process, not just the final answer.", category: "Interview" },
+                { tip: "Build 2-3 strong projects with real impact metrics. 'Built an app with 500+ users' is 10x stronger than 'Built an app'.", category: "Projects" },
+                { tip: "For HR rounds, prepare 5 STAR stories covering: leadership, conflict, failure, teamwork, and pressure handling.", category: "Behavioral" },
+                { tip: "Start system design prep early. Even for freshers, basic concepts like load balancing and caching show maturity.", category: "System Design" },
+                { tip: "Keep your GitHub active. Consistent green squares signal dedication — even small daily commits matter to recruiters.", category: "Portfolio" },
+                { tip: "Mock interviews are the #1 way to improve. Practice with friends or AI — the discomfort makes you better.", category: "Practice" },
+                { tip: "Don't skip aptitude prep for service companies. TCS NQT, Infosys, and Wipro filter 60% of candidates in the aptitude round.", category: "Aptitude" },
+                { tip: "Learn one language deeply rather than three superficially. Master Python or Java — know its collections, threading, and OOP inside-out.", category: "Language" },
+                { tip: "Network on LinkedIn. Connect with employees at target companies. Referrals can 3x your chances of getting an interview.", category: "Networking" },
+                { tip: "After every mock interview, write down what went wrong. Track your weak topics and attack them systematically.", category: "Strategy" },
+                { tip: "SQL is tested in almost every placement — master JOINs, GROUP BY, window functions (ROW_NUMBER, RANK), and subqueries.", category: "DBMS" },
+                { tip: "For product companies, understand time and space complexity deeply. Know when O(N log N) is acceptable vs when O(N) is needed.", category: "DSA" },
+              ];
+              const dayIndex = new Date().getDate() % tips.length;
+              const today = tips[dayIndex];
+              return (
+                <div>
+                  <p className="text-sm text-gray-300 leading-relaxed">{today.tip}</p>
+                  <span className="inline-block mt-2 text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-primary-500/10 text-primary-400 border border-primary-500/20">
+                    {today.category}
+                  </span>
+                </div>
+              );
+            })()}
+          </div>
         </div>
       </div>
     </div>
