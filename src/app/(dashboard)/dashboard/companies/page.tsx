@@ -33,9 +33,11 @@ export default function CompaniesPage() {
   const [companiesList, setCompaniesList] = useState(companies);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
 
-  const handleSearch = async (val: string) => {
+  const handleSearch = async (val: string, companyFilter?: string) => {
     setSearch(val);
+    setSelectedCompany(companyFilter || null);
     if (!val.trim()) {
       setCompaniesList(companies);
       setSearchResults([]);
@@ -43,7 +45,11 @@ export default function CompaniesPage() {
     }
     setLoading(true);
     try {
-      const res = await fetch(`/api/companies/search?q=${encodeURIComponent(val)}`);
+      let url = `/api/companies/search?q=${encodeURIComponent(val)}`;
+      if (companyFilter) {
+        url += `&company=${encodeURIComponent(companyFilter)}`;
+      }
+      const res = await fetch(url);
       const data = await res.json();
       if (data.success) {
         setCompaniesList(data.companies);
@@ -57,7 +63,7 @@ export default function CompaniesPage() {
   };
 
   const handleExploreCompany = (compName: string) => {
-    handleSearch(compName);
+    handleSearch(compName, compName);
     setTimeout(() => {
       document.getElementById("company-search-input")?.scrollIntoView({ behavior: "smooth" });
     }, 100);
@@ -102,6 +108,17 @@ export default function CompaniesPage() {
             placeholder='Try: "linked list questions at Google" — Semantic search'
             className="w-full pl-10 pr-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl text-sm text-gray-300 placeholder-gray-600 focus:outline-none focus:border-primary-500/50 transition-colors"
           />
+          {selectedCompany && (
+            <button
+              onClick={() => { setSearch(""); setSelectedCompany(null); setCompaniesList(companies); setSearchResults([]); }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs bg-primary-500/20 text-primary-400 px-2 py-0.5 rounded-md hover:bg-primary-500/30 transition-colors flex items-center gap-1"
+            >
+              {selectedCompany}
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
         </div>
 
         {/* Type filter */}
@@ -146,7 +163,10 @@ export default function CompaniesPage() {
       {searchResults.length > 0 && (
         <div className="space-y-3 animate-scale-in">
           <h2 className="text-sm font-bold text-primary-400 uppercase tracking-wider">
-            Semantic Database Matches ({searchResults.length})
+            {selectedCompany
+              ? `Questions for ${selectedCompany} (${searchResults.length})`
+              : `Semantic Database Matches (${searchResults.length})`
+            }
           </h2>
           <div className="grid gap-3">
             {searchResults.map((res: any, idx: number) => {
@@ -242,7 +262,7 @@ export default function CompaniesPage() {
       {filtered.length === 0 && (
         <div className="text-center py-16">
           <p className="text-gray-500 text-lg">No companies match your filters.</p>
-          <button onClick={() => { setSearch(""); setFilter("All"); setDiffFilter("All"); setCompaniesList(companies); setSearchResults([]); }} className="text-primary-400 text-sm mt-2">
+          <button onClick={() => { setSearch(""); setFilter("All"); setDiffFilter("All"); setSelectedCompany(null); setCompaniesList(companies); setSearchResults([]); }} className="text-primary-400 text-sm mt-2">
             Clear filters
           </button>
         </div>

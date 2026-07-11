@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
           const { context } = await retrieveAndAugment(
             `${targetCompanies.join(" ")} SDE requirements skills expected`,
             "company_profiles",
-            { topK: 3 }
+            { topK: 2, minSimilarity: 0.25 }
           );
           if (context) reqsContext = context;
         } catch {}
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       const { context } = await retrieveAndAugment(
         `${targetCompanies.join(" ")} hiring process interview rounds and criteria`,
         "company_profiles",
-        { topK: 4 }
+        { topK: 3, minSimilarity: 0.25 }
       );
       if (context) companyPatterns = context;
     } catch {}
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       const { context } = await retrieveAndAugment(
         `${targetCompanies.join(" ")} frequently asked coding interview questions`,
         "interview_bank",
-        { topK: 5 }
+        { topK: 4, minSimilarity: 0.3, maxChunkLength: 600 }
       );
       if (context) topicsData = context;
     } catch {}
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       const { context } = await retrieveAndAugment(
         `study guides practice courses for ${skillLevel} level`,
         "learning_resources",
-        { topK: 5 }
+        { topK: 3, minSimilarity: 0.2 }
       );
       if (context) learningResources = context;
     } catch {}

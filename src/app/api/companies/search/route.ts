@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("q") || "";
+    const companyFilter = searchParams.get("company") || "";
 
     if (!query.trim()) {
       return NextResponse.json({
@@ -36,10 +37,20 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    // Build metadata filter when a specific company is selected
+    const metadataFilter: Record<string, unknown> = companyFilter
+      ? { company: companyFilter.toLowerCase() }
+      : {};
+
     // ── RAG: Perform search on interview_bank ──
     let bankResults: any[] = [];
     try {
-      const { chunks } = await retrieveAndAugment(query, "interview_bank", { topK: 15 });
+      const { chunks } = await retrieveAndAugment(query, "interview_bank", {
+        topK: companyFilter ? 12 : 8,
+        minSimilarity: 0.25,
+        maxChunkLength: 800,
+        filters: metadataFilter,
+      });
       bankResults = chunks;
     } catch (e) {
       console.warn("RAG search failed for interview bank, using fallback.");
@@ -48,7 +59,11 @@ export async function GET(request: NextRequest) {
     // ── RAG: Perform search on company_profiles ──
     let profileResults: any[] = [];
     try {
-      const { chunks } = await retrieveAndAugment(query, "company_profiles", { topK: 3 });
+      const { chunks } = await retrieveAndAugment(query, "company_profiles", {
+        topK: 2,
+        minSimilarity: 0.2,
+        filters: metadataFilter,
+      });
       profileResults = chunks;
     } catch (e) {
       console.warn("RAG search failed for company profiles, using fallback.");

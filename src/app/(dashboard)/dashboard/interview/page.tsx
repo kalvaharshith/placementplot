@@ -120,6 +120,7 @@ export default function InterviewPage() {
   }, []);
   const [error, setError] = useState<string | null>(null);
   const [expandedQuestion, setExpandedQuestion] = useState<number | null>(null);
+  const [lowQualityWarning, setLowQualityWarning] = useState<string | null>(null);
 
   // ─── Real-Time Added States ───
   const [voiceEnabled, setVoiceEnabled] = useState(false);
@@ -410,9 +411,29 @@ export default function InterviewPage() {
     }
   };
 
+  // ─── Answer Quality Check ───
+  const checkAnswerQuality = (text: string): string | null => {
+    const trimmed = text.trim();
+    if (trimmed.length < 3) return "Your answer is too short. Please provide a substantive response.";
+    const words = trimmed.split(/\s+/).filter(Boolean);
+    if (words.length < 3) return "Please write at least a few words — short answers will score very low.";
+    if (/^[^a-zA-Z0-9]*$/.test(trimmed)) return "This doesn't look like a real answer. Please try again.";
+    // Detect repeated characters / keyboard mashing
+    if (/^(.)(\1{4,})$/.test(trimmed) || /^([a-z])\1{3,}/i.test(trimmed)) return "This looks like gibberish. Please provide a real answer.";
+    return null;
+  };
+
   // ─── Send Message (Streaming) ───
   const sendMessage = async () => {
     if (!input.trim() || thinking) return;
+
+    // Client-side quality gate
+    const qualityIssue = checkAnswerQuality(input);
+    if (qualityIssue && !lowQualityWarning) {
+      setLowQualityWarning(qualityIssue);
+      return; // Show warning first; user must click send again to force-send
+    }
+    setLowQualityWarning(null);
 
     if (isListening && recognition) {
       recognition.stop();
@@ -937,12 +958,30 @@ export default function InterviewPage() {
                 </div>
               )}
 
+              {/* Low quality answer warning */}
+              {lowQualityWarning && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-warning-500/10 border border-warning-500/20 rounded-lg animate-fade-in">
+                  <svg className="w-4 h-4 text-warning-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                  </svg>
+                  <span className="text-xs text-warning-400 flex-1">{lowQualityWarning} <span className="text-warning-500/60">(Press send again to submit anyway)</span></span>
+                  <button
+                    onClick={() => setLowQualityWarning(null)}
+                    className="text-warning-500/50 hover:text-warning-400 transition-colors"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+
               {/* Chat Text Box and action items */}
               <div className="glass-card rounded-xl p-3 flex gap-3 items-center">
                 <input
                   type="text"
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  onChange={(e) => { setInput(e.target.value); if (lowQualityWarning) setLowQualityWarning(null); }}
                   onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                   placeholder={isListening ? "Listening to your voice..." : "Type your answer here..."}
                   className="flex-1 bg-transparent text-sm text-gray-200 placeholder-gray-600 outline-none"

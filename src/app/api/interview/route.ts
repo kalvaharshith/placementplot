@@ -50,7 +50,9 @@ async function handleStartInterviewStream(body: {
       `${company} ${round} ${role} interview questions ${difficulty}`,
       "interview_bank",
       {
-        topK: 25,
+        topK: 10,
+        minSimilarity: 0.3,
+        maxChunkLength: 800,
         contextHeader: `REAL ${company.toUpperCase()} AND RELATED INTERVIEW QUESTIONS:`,
       }
     );
@@ -66,7 +68,8 @@ async function handleStartInterviewStream(body: {
       `${company} interview process hiring pattern ${round}`,
       "company_profiles",
       {
-        topK: 3,
+        topK: 2,
+        minSimilarity: 0.25,
         contextHeader: `${company.toUpperCase()} INTERVIEW STYLE AND PATTERNS:`,
       }
     );
@@ -152,8 +155,11 @@ async function handleMessageStream(body: {
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        // Adjust history: Gemini chat requires the first message to have the 'user' role.
+        // Truncate history to last 20 messages to save tokens
         let adjustedHistory = [...history];
+        if (adjustedHistory.length > 20) {
+          adjustedHistory = adjustedHistory.slice(-20);
+        }
         if (adjustedHistory.length > 0 && adjustedHistory[adjustedHistory.length - 1].role === "user") {
           adjustedHistory.pop();
         }
@@ -236,10 +242,12 @@ async function handleEvaluate(body: {
         .join(" ");
 
       const { context } = await retrieveAndAugment(
-        questions.substring(0, 1000),
+        questions.substring(0, 600),
         "interview_bank",
         {
-          topK: 12,
+          topK: 6,
+          minSimilarity: 0.3,
+          maxChunkLength: 600,
           contextHeader: "MODEL ANSWERS FROM KNOWLEDGE BASE:",
         }
       );

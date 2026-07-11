@@ -49,6 +49,12 @@ Guidelines:
 6. Include weekly milestones and checkpoints
 7. Add "why this matters" for each topic (which company asks it)
 
+CRITICAL URL RULES:
+- ONLY use URLs that appear in the AVAILABLE LEARNING RESOURCES section above.
+- Do NOT invent, guess, or hallucinate any URLs. Every URL must come from the provided context.
+- If you want to recommend a resource but no URL is available in the context, set the "url" field to an empty string "".
+- Never generate fake URLs like "https://example.com" or made-up paths.
+
 Return JSON:
 {
   "title": "<Personalized Roadmap Title>",

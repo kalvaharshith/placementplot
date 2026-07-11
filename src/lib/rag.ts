@@ -142,15 +142,33 @@ export async function retrieveAndAugment(
     filters?: Record<string, unknown>;
     topK?: number;
     contextHeader?: string;
+    minSimilarity?: number;
+    maxChunkLength?: number;
   }
 ): Promise<{
   context: string;
   chunks: MatchDocumentResult[];
 }> {
-  const chunks = await hybridSearch(query, kbType, {
+  const rawChunks = await hybridSearch(query, kbType, {
     filters: options?.filters,
     topK: options?.topK || 5,
   });
+
+  // Filter out low-relevance chunks to save tokens
+  const minSim = options?.minSimilarity ?? 0;
+  let chunks = minSim > 0
+    ? rawChunks.filter((c) => c.similarity >= minSim)
+    : rawChunks;
+
+  // Truncate excessively long chunks to cap token usage
+  const maxLen = options?.maxChunkLength;
+  if (maxLen && maxLen > 0) {
+    chunks = chunks.map((c) =>
+      c.content.length > maxLen
+        ? { ...c, content: c.content.substring(0, maxLen) + "\n...[truncated]" }
+        : c
+    );
+  }
 
   const context = formatRetrievedContext(chunks, options?.contextHeader);
 

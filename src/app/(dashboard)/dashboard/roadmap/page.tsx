@@ -590,18 +590,35 @@ export default function RoadmapPage() {
                         {/* Resources links */}
                         {task.resources && task.resources.length > 0 && (
                           <div className="flex flex-wrap gap-2 mt-1.5">
-                            {task.resources.map((res: any, rIdx: number) => (
-                              <a
-                                key={rIdx}
-                                href={res.url || "#"}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-flex items-center gap-1 text-[10px] bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white px-2 py-0.5 rounded border border-white/5 transition-colors"
-                              >
-                                <span>🔗 {res.title}</span>
-                                <span className="text-gray-600 uppercase text-[8px] font-bold">({res.type || "link"})</span>
-                              </a>
-                            ))}
+                            {task.resources.map((res: any, rIdx: number) => {
+                              const hasValidUrl = res.url && /^https?:\/\/.+\..+/.test(res.url);
+                              if (hasValidUrl) {
+                                return (
+                                  <a
+                                    key={rIdx}
+                                    href={res.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-flex items-center gap-1 text-[10px] bg-primary-500/10 hover:bg-primary-500/20 text-primary-400 hover:text-primary-300 px-2 py-0.5 rounded border border-primary-500/15 transition-colors"
+                                  >
+                                    <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                    </svg>
+                                    <span>{res.title}</span>
+                                    <span className="text-primary-500/50 uppercase text-[8px] font-bold">({res.type || "link"})</span>
+                                  </a>
+                                );
+                              }
+                              return (
+                                <span
+                                  key={rIdx}
+                                  className="inline-flex items-center gap-1 text-[10px] bg-white/5 text-gray-500 px-2 py-0.5 rounded border border-white/5"
+                                >
+                                  <span>📄 {res.title}</span>
+                                  <span className="text-gray-600 uppercase text-[8px] font-bold">({res.type || "resource"})</span>
+                                </span>
+                              );
+                            })}
                           </div>
                         )}
                       </div>
