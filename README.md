@@ -1,68 +1,6 @@
 
 # 🧠 Placement Plot AI
-### RAG-Powered Intelligent Placement Preparation & AI Mock Interview System
-## Getting Started
-<p align="center">
-<img src="https://img.shields.io/badge/Next.js-16.2-black?logo=nextdotjs">
-<img src="https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript">
-<img src="https://img.shields.io/badge/Supabase-Database-green?logo=supabase">
-<img src="https://img.shields.io/badge/pgvector-Vector_Search-red">
-<img src="https://img.shields.io/badge/Google_Gemini-Generative_AI-orange?logo=google">
-<img src="https://img.shields.io/badge/Tailwind_CSS-v4-38bdf8?logo=tailwindcss">
-<img src="https://img.shields.io/badge/Razorpay-Payments-blue">
-</p>
-
-  participant RAG as Supabase RAG
-  participant AI as Gemini API
-  
-  Candidate->>App: Upload Resume PDF + Target Job Description
-  App->>App: Parse PDF Text (unpdf)
-  App->>RAG: Retrieve ATS Formatting Rules & Examples
-  RAG-->>App: Return Rules & Scoring Metadata
-  App->>AI: Send Augmented Prompt (Resume + Rules + Job Description)
-  AI-->>App: Return JSON (ATS Score, Missing Keywords, Suggestions)
-  App-->>Candidate: Render Feedback Dashboard
-```
-### 2. Interactive Mock Interview Simulation
-```mermaid
-sequenceDiagram
-  participant Candidate as Candidate
-  participant UI as Interview Dashboard
-  participant App as Next.js API
-  participant RAG as Supabase Vector Store
-  participant AI as Gemini API
-  Candidate->>U
-  ),
-  text_results AS (
-    SELECT d.id, d.content, d.metadata, ts_rank(d.fts, plainto_tsquery('english', query_text)) AS text_rank
-    FROM documents d
-    WHERE d.kb_type = filter_kb_type
-      AND d.fts @@ plainto_tsquery('english', query_text)
-    ORDER BY text_rank DESC LIMIT match_count * 2
-  )
-  SELECT 
-    COALESCE(v.id, t.id) AS id,
-    COALESCE(v.content, t.content) AS content,
-    COALESCE(v.metadata, t.metadata) AS metadata,
-    (COALESCE(v.vec_similarity, 0) * vector_weight + COALESCE(t.text_rank, 0) * text_weight) AS similarity
-  FROM vector_results v
-  FULL OUTER JOIN text_results t ON v.id = t.id
-  ORDER BY similarity DESC LIMIT match_count;
-END;
-$$ LANGUAGE plpgsql;
-```
----
-# 🛠️ Technology Stack
-| Layer | Technology | Description |
-|---|---|---|
-| Frontend | React 19, Next.js (App Router), Tailwind CSS v4, Lucide React | Clean, high-performance visual dashboard styling. |
-| Backend | Next.js Server Actions & API Routes, Node.js | Fast serverless routing and server component rendering. |
-| Database | Supabase, PostgreSQL | Secure Relational Database with real-time replication. |
-| AI/ML Layer| Google Gemini API (`text-embedding-004`), JSON constraints | Vector embeddings and structured generative evaluations. |
-| Extensions | pgvector (HNSW Index), GIN (jsonb_path_ops) | High-speed semantic similarity queries and JSON search. |
-| Payments | Razorpay Node SDK | Subscription billing webhook handler and credits updates. |
-| Utilities | unpdf, jsonrepair, uuid | Clean document extraction and reliable JSON parser fixes. |
----
+### 
 # 📁 Project Directory Tree
 ```bash
 npm run dev
