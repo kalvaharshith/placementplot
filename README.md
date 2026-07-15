@@ -29,8 +29,7 @@ Below is a conceptual layout of the Placement Plot AI dashboard, demonstrating t
 - ✅ AI Interactivity & Dynamic Prompts: Implements multi-turn mock interview agents that dynamically adjust follow-up lines based on candidate responses.
 - 
 ---
-# 🎯 Problem Statement
-Traditional placement preparation systems are fragmented and present key challenges:
+# 🎯 Problem Statementnt key challenges:
 - One-Size-Fits-All Advice: Students prepare using generic resources rather than targeted material matched to specific companies (e.g., Google vs. McKinsey).
 - 
 ---
