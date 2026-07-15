@@ -21,24 +21,7 @@ Below is a conceptual layout of the Placement Plot AI dashboard, demonstrating t
   <img src="./public/dashboard-screenshot.png" alt="Placement Plot AI Dashboard Mockup" width="100%">
 </p>
 ---
-# 🌟 Key Highlights
-- ✅ Next.js & Supabase Architecture: Modern App Router layout with server-side rendering (SSR) and strict Postgres Row-Level Security (RLS).
-- ✅ Hyb
-      Missing Skills Gap Analysis
-      STAR/XYZ Bullet Enhancer
-    Interviewer Simulator
-      Multi-turn Conversations
-      Multi-criteria Evaluation
-      Int
-  end
-  subgraph Checkout
-    API -->|Subscription Billing| Razorpay[Razorpay API Gateway]
-  end
-```
----
-# 🔄 End-to-End Workflow
-### 1. Resume Assessment & Skill Gap Engine
-```mermaid
+# 
 sequenceDiagram
   participant Candidate as Candidate
   participant App as Next.js API
