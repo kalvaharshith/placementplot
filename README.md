@@ -27,8 +27,7 @@ Below is a conceptual layout of the Placement Plot AI dashboard, demonstrating t
 - ✅ Hybrid RAG Engine: Fuses vector cosine similarity metrics (using Gemini `text-embedding-004`) with keyword indexes (`tsvector`/`ts_rank`).
 - ✅ Automated ATS Scoring: Extracts candidate text (via `unpdf`) to score compatibility and map keyword gaps against specific job requirements.
 - ✅ AI Interactivity & Dynamic Prompts: Implements multi-turn mock interview agents that dynamically adjust follow-up lines based on candidate responses.
-- ✅ Payment System Integration: Processes secure payments and subscriptions via Razorpay, directly updating client resource credits.
-- ✅ Structured JSON Outputs: Employs schema validation rules to format raw LLM text into verified JSON objects for dashboard parsing.
+- 
 ---
 # 🎯 Problem Statement
 Traditional placement preparation systems are fragmented and present key challenges:
