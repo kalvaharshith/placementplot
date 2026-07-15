@@ -369,15 +369,8 @@ GitHub: https://github.com/kalvaharshith
 
 LinkedIn: https://linkedin.com/in/harshith-reddy-kalva
 
-Portfolio: *(Add your portfolio URL here)*
 
----
 
-# 📄 License
-
-This project is licensed under the MIT License.
-
----
 
 <div align="center">
 
