@@ -29,14 +29,7 @@ Below is a conceptual layout of the Placement Plot AI dashboard, demonstrating t
     Interviewer Simulator
       Multi-turn Conversations
       Multi-criteria Evaluation
-      Interactive Follow-ups
-    Userrse]
-  end
-  subgraph Database Layer
-    API -->|Supabase Client / SSR Auth| Supabase[(Supabase Postgres)]
-    Supabase -->|Vector Match RPC| Vector[pgvector HNSW Index]
-    Supabase -->|Keyword Search| FTS[Full-Text Search Index]
-    Supabase -->|Transaction Security| RLS[Row-Level Security Policies]
+      Int
   end
   subgraph Checkout
     API -->|Subscription Billing| Razorpay[Razorpay API Gateway]
