@@ -11,13 +11,7 @@ pnpm dev
 # or
 bun dev
 placementplot/
-├── public/                 # Static assets (icons, SVGs, screenshots)
-│   └── dashboard-screenshot.png
-├── supabase/
-│   └── migrations/         # PostgreSQL table migrations & RPCs
-│       └── 001_vector_tables.sql
-├── src/
-│   ├── app/                # Next.js App Router folders & pages
+├── public/              
 │   │   ├── api/            # API Route handlers (Auth, Seed, AI APIs)
 │   │   └── (dashboard)/    # Dashboard portal layout & views
 │   ├── features/           # Modularized platform features
