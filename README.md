@@ -23,11 +23,7 @@ Below is a conceptual layout of the Placement Plot AI dashboard, demonstrating t
 ---
 # 🌟 Key Highlights
 - ✅ Next.js & Supabase Architecture: Modern App Router layout with server-side rendering (SSR) and strict Postgres Row-Level Security (RLS).
-- ✅ Hybrid RAG Engine: Fuses vector cosine similarity metrics (using Gemini `text-embedding-004`) with keyword indexes (`tsvector`/`ts_rank`).
-- ✅ Automated ATS Scoring: Extracts candidate text (via `unpdf`) to score compatibility and map keyword gaps against specific job requirements.
-- ✅ AI Interactivity & Dynamic Prompts: Implements multi-turn mock interview agents that dynamically adjust follow-up lines based on candidate responses.
-- 
----
+- ✅ Hyb
       Missing Skills Gap Analysis
       STAR/XYZ Bullet Enhancer
     Interviewer Simulator
