@@ -14,7 +14,6 @@
 First, run the development server:
 ---
 # 🚀 Executive Summary
-Placement Plot AI is an enterprise-grade AI-powered SaaS career portal designed to optimize placement preparation for engineering candidates. By combining Next.js, Supabase (PostgreSQL), and Google Gemini API, the system analyzes resumes, detects specific skill gaps against target company profiles, generates week-by-week personalized learning ro
 ---
 # 🌟 Product Demo & Interface Mockup
 Below is a conceptual layout of the Placement Plot AI dashboard, demonstrating the unified workspace, candidate analytics, interactive roadmaps, and the mock interview suite:
