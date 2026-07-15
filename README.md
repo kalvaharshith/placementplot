@@ -11,20 +11,7 @@
 <img src="https://img.shields.io/badge/Tailwind_CSS-v4-38bdf8?logo=tailwindcss">
 <img src="https://img.shields.io/badge/Razorpay-Payments-blue">
 </p>
-First, run the development server:
----
-# 🚀 Executive Summary
----
-# 🌟 Product Demo & Interface Mockup
-Below is a conceptual layout of the Placement Plot AI dashboard, demonstrating the unified workspace, candidate analytics, interactive roadmaps, and the mock interview suite:
-<p align="center">
-  <img src="./public/dashboard-screenshot.png" alt="Placement Plot AI Dashboard Mockup" width="100%">
-</p>
----
-# 
-sequenceDiagram
-  participant Candidate as Candidate
-  participant App as Next.js API
+
   participant RAG as Supabase RAG
   participant AI as Gemini API
   
