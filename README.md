@@ -32,9 +32,7 @@ Below is a conceptual layout of the Placement Plot AI dashboard, demonstrating t
 # 🎯 Problem Statement
 Traditional placement preparation systems are fragmented and present key challenges:
 - One-Size-Fits-All Advice: Students prepare using generic resources rather than targeted material matched to specific companies (e.g., Google vs. McKinsey).
-- Expensive Coaching: Getting professional resume reviews and realistic mock interviews is costly and non-scalable.
-- Unquantified Progress: Candidates struggle to evaluate formatting, find missing keywords, and track week-by-week progress metrics.
-- Data Silos: Placement preparation platforms rarely integrate learning materials, resumes, payments, and mock feedback in a single hub.
+- 
 ---
 # 🧩 Problem Landscape
 ```mermaid
