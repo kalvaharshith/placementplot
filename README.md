@@ -30,22 +30,7 @@ Below is a conceptual layout of the Placement Plot AI dashboard, demonstrating t
       Multi-turn Conversations
       Multi-criteria Evaluation
       Interactive Follow-ups
-    User Progress Track
-      Structured Roadmap Plans
-      Razorpay billing & credits
-      Supabase RLS access control
-```
----
-# 🏗️ Enterprise System Architecture
-```mermaid
-flowchart TD
-  User([User Browser]) -->|Next.js App Router| Frontend[Client Components / UI]
-  Frontend -->|API Queries / HTTP| API[Next.js API Server Routes]
-  
-  subgraph AI & Processing Layer
-    API -->|Prompt & Context Augmentation| LLM[Google Gemini API]
-    API -->|Document Embedding| Embeddings[Gemini text-embedding-004]
-    API -->|PDF Extraction| Parser[unpdf / PDF Parse]
+    Userrse]
   end
   subgraph Database Layer
     API -->|Supabase Client / SSR Auth| Supabase[(Supabase Postgres)]
