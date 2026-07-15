@@ -60,24 +60,7 @@ RAZORPAY_KEY_SECRET=your_razorpay_key_secret
 ```
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-### 3. Setup Database Schema
-1. Connect to your **Supabase SQL Editor**.
-2. Copy and execute the migrations script located in `supabase/migrations/001_vector_tables.sql` to initialize tables, indexes, and custom RPC functions.
-3. Boot up the development server:
-   ```bash
-   npm run dev
-   ```
-4. Run the seed script in a separate window to pre-populate the vector database with company profiles and resume examples:
-   ```bash
-   node setup-db.mjs
-   ```
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
----
-## Deploy on Vercel
-# 🏆 Core Learning Demonstrations
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-Building this project exercises key systems engineering competencies:
-- **Vector Search Optimization:** Creating index files (HNSW and GIN) for performance indexing of complex embeddings.
+### 3. Setup D
 - **Context Window Management:** Tuning hybrid RAG weights and source-citing boundaries inside system prompts.
 - **Secure Transaction Handling:** Linking external APIs (Razorpay) to state updates behind RLS policy gates.
 - **Structured LLM Orchestration:** Forcing schema formatting constraints (`jsonrepair` integration) to avoid raw text-parsing crashes.
