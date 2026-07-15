@@ -31,58 +31,7 @@ sequenceDiagram
   participant App as Next.js API
   participant RAG as Supabase Vector Store
   participant AI as Gemini API
-  Candidate->>UI: Select Company (e.g. Amazon), Role & Difficulty
-  UI->>App: Request New Mock Session
-  App->>RAG: Hybrid Search Vector Store for Past Interview Questions
-  RAG-->>App: Return Real Past Questions & Patterns
-  App->>AI: Initialize Interviewer System Prompt (Company Context + Questions)
-  AI-->>UI: First Question
-  Loop Chat Rounds
-    Candidate->>UI: Answer Question
-    UI->>App: Submit Response
-    App->>AI: Evaluate Response & Formulate Follow-up
-    AI-->>UI: Next Question / Follow-up
-  End
-  UI->>App: Complete Interview
-  App->>AI: Grade Conversation History (STAR/XYZ checks)
-  AI-->>App: Return Performance Evaluation JSON
-  App-->>Candidate: Show Score Breakdown & Recommended Topics
-```
----
-# 📂 Database Schema Overview
-The database is built on PostgreSQL inside Supabase, utilizing `pgvector` for fast approximate nearest neighbor (ANN) similarity matching.
-### Database Tables
-| Table | Primary Key | Description | RLS Policy |
-|---|---|---|---|
-| `documents` | `UUID` | Unified knowledge base storing vector embeddings (768D) for ATS rules, company profiles, and learning resources. | Public Read |
-| `profiles` | `UUID` (auth.users) | Extended user profile details (college, tier, resume/interview credits). | Owner Read/Write |
-| `resumes` | `UUID` | Stores parsed resume text, ATS scoring JSONs, and PDF paths. | Owner Read/Write |
-| `mock_interviews`| `UUID` | Logs full chat history transcripts, category scores, and final feedback. | Owner Read/Write |
-| `roadmap_plans` | `UUID` | Personalized study modules, week-by-week tasks, and completion progress. | Owner Read/Write |
-| `subscriptions` | `UUID` | Syncs Razorpay subscription plans, status, and renewal deadlines. | Owner Read/Write |
----
-# 🧮 Hybrid Search & Vector RAG Engine
-A custom PostgreSQL stored function `match_documents` fusions semantic vector distance and text ranking using a weighted score
-```sql
-CREATE OR REPLACE FUNCTION match_documents(
-  query_embedding VECTOR(768),
-  query_text TEXT,
-  filter_kb_type TEXT,
-  filter_metadata JSONB DEFAULT '{}',
-  match_count INT DEFAULT 5,
-  vector_weight FLOAT DEFAULT 0.7,
-  text_weight FLOAT DEFAULT 0.3
-)
-RETURNS TABLE (id UUID, content TEXT, metadata JSONB, similarity FLOAT)
-AS $$
-BEGIN
-  RETURN QUERY
-  WITH vector_results AS (
-    SELECT d.id, d.content, d.metadata, 1 - (d.embedding <=> query_embedding) AS vec_similarity
-    FROM documents d
-    WHERE d.kb_type = filter_kb_type
-      AND (filter_metadata = '{}'::JSONB OR d.metadata @> filter_metadata)
-    ORDER BY d.embedding <=> query_embedding LIMIT match_count * 2
+  Candidate->>U
   ),
   text_results AS (
     SELECT d.id, d.content, d.metadata, ts_rank(d.fts, plainto_tsquery('english', query_text)) AS text_rank
