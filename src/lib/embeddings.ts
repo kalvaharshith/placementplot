@@ -39,6 +39,32 @@ function setCachedEmbedding(text: string, embedding: number[]): void {
 
 // ─── Single Embedding ──────────────────────────────────────────
 
+function getRetryDelay(err: any, currentDelay: number): number {
+  const msg = err.message || "";
+  const is429 = msg.includes("429") || msg.includes("quota") || msg.includes("rate limit") || msg.includes("Too Many Requests");
+  
+  if (is429) {
+    // Try to extract "retry in 58.192s"
+    const match = msg.match(/retry in ([\d.]+)s/i);
+    if (match) {
+      const seconds = parseFloat(match[1]);
+      return Math.ceil(seconds * 1000) + 1500; // wait slightly longer than requested for safety
+    }
+    // Try to extract retryDelay from JSON structure if present
+    try {
+      const jsonMatch = msg.match(/retryDelay":\s*"([\d.]+)s"/);
+      if (jsonMatch) {
+        return Math.ceil(parseFloat(jsonMatch[1]) * 1000) + 1500;
+      }
+    } catch {}
+    
+    // Default 429 wait time (60 seconds)
+    return Math.max(60000, currentDelay);
+  }
+  
+  return currentDelay;
+}
+
 /**
  * Generate embedding for a single text (for queries).
  * Results are cached for repeated queries.
@@ -47,7 +73,7 @@ export async function embedText(text: string): Promise<number[]> {
   const cached = getCachedEmbedding(text);
   if (cached) return cached;
 
-  let retries = 3;
+  let retries = 5;
   let delay = 1000;
   while (retries > 0) {
     try {
@@ -73,9 +99,11 @@ export async function embedText(text: string): Promise<number[]> {
       if (retries === 0 || !isTransient) {
         throw err;
       }
-      console.warn(`Gemini embedding transient error (status ${status}). Retrying in ${delay}ms... remaining retries: ${retries}`);
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      delay *= 2; // exponential backoff
+      
+      const computedDelay = getRetryDelay(err, delay);
+      console.warn(`Gemini embedding transient error (status ${status}). Retrying in ${computedDelay}ms... remaining retries: ${retries}`);
+      await new Promise((resolve) => setTimeout(resolve, computedDelay));
+      delay = computedDelay * 2; // exponential backoff fallback
     }
   }
   throw new Error("Failed after retries");
@@ -97,7 +125,7 @@ export async function embedBatch(
     const batch = texts.slice(i, i + batchSize);
 
     let result;
-    let retries = 3;
+    let retries = 5;
     let delay = 1000;
     while (retries > 0) {
       try {
@@ -123,9 +151,11 @@ export async function embedBatch(
         if (retries === 0 || !isTransient) {
           throw err;
         }
-        console.warn(`Gemini batch embedding transient error (status ${status}). Retrying in ${delay}ms... remaining retries: ${retries}`);
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        delay *= 2;
+        
+        const computedDelay = getRetryDelay(err, delay);
+        console.warn(`Gemini batch embedding transient error (status ${status}). Retrying in ${computedDelay}ms... remaining retries: ${retries}`);
+        await new Promise((resolve) => setTimeout(resolve, computedDelay));
+        delay = computedDelay * 2;
       }
     }
 
