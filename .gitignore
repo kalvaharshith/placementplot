@@ -30,8 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -42,3 +43,12 @@ next-env.d.ts
 
 # OneDrive conflicts
 *-DESKTOP-ASQ1KSG*
+
+# Test / scratch scripts
+create-test-pdf.mjs
+test-*.mjs
+list-models.mjs
+resume-test.pdf
+
+# AI assistant config
+CLAUDE.md
