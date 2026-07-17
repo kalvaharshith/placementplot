@@ -5,6 +5,12 @@ import {
   RESUME_ANALYSIS_SYSTEM,
   buildResumeAnalysisPrompt,
 } from "@/features/resume/prompts";
+import {
+  FraudShield,
+  getClientIP,
+  rateLimitResponse,
+  RATE_LIMITS,
+} from "@/lib/fraud-shield";
 
 import { extractText, getDocumentProxy } from "unpdf";
 
@@ -31,9 +37,36 @@ interface ResumeAnalysisResult {
   summary: string;
 }
 
+// ─── Constants ─────────────────────────────────────────────────
+
+const MAX_PDF_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+const MIN_RESUME_LENGTH = 50;
+
 // ─── POST /api/resume/analyze ──────────────────────────────────
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIP(request);
+  const userAgent = request.headers.get("user-agent") || undefined;
+
+  // ── FraudShield: Rate limit (5 analyses/10min per IP) ──
+  const rateCheck = FraudShield.checkRateLimit(
+    `resume:analyze:${ip}`,
+    RATE_LIMITS.resumeAnalyze
+  );
+  if (!rateCheck.allowed) {
+    FraudShield.logFraudEvent({
+      eventType: "rate_limit",
+      severity: "medium",
+      ipAddress: ip,
+      userAgent,
+      route: "/api/resume/analyze",
+      details: { hits: rateCheck.totalHits },
+      actionTaken: "rate_limited",
+      riskScore: 50,
+    });
+    return rateLimitResponse(rateCheck, "resume:analyze");
+  }
+
   let resumeText = "";
   let jobDescription: string | undefined = undefined;
 
@@ -44,6 +77,14 @@ export async function POST(request: NextRequest) {
     jobDescription = (formData.get("jobDescription") as string) || undefined;
 
     if (file) {
+      // ── FraudShield: Validate PDF size (max 5MB) ──
+      if (file.size > MAX_PDF_SIZE_BYTES) {
+        return NextResponse.json(
+          { error: `File is too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Maximum allowed size is 5MB.` },
+          { status: 400 }
+        );
+      }
+
       try {
         const buffer = Buffer.from(await file.arrayBuffer());
         const uint8Array = new Uint8Array(buffer);
@@ -59,10 +100,39 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (!resumeText || resumeText.trim().length < 50) {
+    if (!resumeText || resumeText.trim().length < MIN_RESUME_LENGTH) {
       return NextResponse.json(
         { error: "Resume text/file is too short. Please provide at least 50 characters or a valid PDF." },
         { status: 400 }
+      );
+    }
+
+    // ── FraudShield: AI abuse check on resume text ──
+    const abuseCheck = FraudShield.checkAIAbuse({
+      ipAddress: ip,
+      route: "/api/resume/analyze",
+      inputText: resumeText,
+      userAgent,
+      payloadSizeBytes: new Blob([resumeText]).size,
+    });
+
+    if (!abuseCheck.allowed) {
+      FraudShield.logFraudEvent({
+        eventType: "ai_abuse",
+        severity: "high",
+        ipAddress: ip,
+        userAgent,
+        route: "/api/resume/analyze",
+        details: {
+          signals: abuseCheck.signals,
+          textPreview: resumeText.substring(0, 200),
+        },
+        actionTaken: "blocked",
+        riskScore: abuseCheck.riskScore,
+      });
+      return NextResponse.json(
+        { error: "Your submission was flagged by our security system. Please upload a genuine resume." },
+        { status: 403 }
       );
     }
 
@@ -124,7 +194,7 @@ export async function POST(request: NextRequest) {
 
     // Fallback: generate without RAG if knowledge base isn't set up yet or fails
     try {
-      if (!resumeText || resumeText.trim().length < 50) {
+      if (!resumeText || resumeText.trim().length < MIN_RESUME_LENGTH) {
         return NextResponse.json(
           { error: "Resume text/file is too short or invalid. Please provide at least 50 characters or a valid PDF." },
           { status: 400 }

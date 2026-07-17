@@ -1,118 +1,166 @@
-import { NextResponse } from "next/server";
-import { createServerSupabase } from "@/lib/supabase";
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-// ─── GET /api/migrate ───────────────────────────────────────────
-// One-time migration to fix vector dimensions from 768 → 3072
-// for gemini-embedding-001 compatibility.
+// ─── POST /api/migrate ─────────────────────────────────────
+// Runs all pending migrations using the service role client.
+// This is idempotent — safe to run multiple times.
 
-export async function GET() {
+export async function POST(request: NextRequest) {
   try {
-    const supabase = createServerSupabase();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-    const statements = [
-      // Drop old index
-      `DROP INDEX IF EXISTS documents_embedding_idx`,
-      // Alter column type
-      `ALTER TABLE documents ALTER COLUMN embedding TYPE vector(3072) USING embedding::vector(3072)`,
-      // Recreate HNSW index
-      `CREATE INDEX IF NOT EXISTS documents_embedding_idx ON documents USING hnsw (embedding vector_cosine_ops)`,
-    ];
+    if (!supabaseUrl || !serviceRoleKey) {
+      return NextResponse.json(
+        { error: "Missing Supabase credentials" },
+        { status: 500 }
+      );
+    }
 
-    const results: { sql: string; status: string }[] = [];
+    // Use service role for DDL operations
+    const supabase = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
 
-    for (const sql of statements) {
-      const { error } = await supabase.rpc("exec_sql", { sql_query: sql });
-      if (error) {
-        // Try via raw query if RPC doesn't exist
-        results.push({ sql: sql.substring(0, 60), status: `rpc_error: ${error.message}` });
+    const results: { step: string; status: string; error?: string }[] = [];
+
+    // ─── Migration 002: fraud_events table ──────────────────
+    // Check if table exists first by attempting a select
+    const { error: fraudCheck } = await supabase
+      .from("fraud_events")
+      .select("id")
+      .limit(1);
+
+    if (fraudCheck && fraudCheck.message?.includes("does not exist")) {
+      // Table doesn't exist — create it via RPC
+      // We'll try creating a temporary function to execute DDL
+      const { error: createFraudErr } = await supabase.rpc("exec_sql", {
+        sql_query: `
+          CREATE TABLE IF NOT EXISTS fraud_events (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            event_type TEXT NOT NULL,
+            severity TEXT NOT NULL DEFAULT 'low' CHECK (severity IN ('low', 'medium', 'high', 'critical')),
+            user_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
+            ip_address TEXT,
+            user_agent TEXT,
+            route TEXT,
+            details JSONB DEFAULT '{}',
+            action_taken TEXT NOT NULL DEFAULT 'logged' CHECK (action_taken IN ('blocked', 'warned', 'logged', 'rate_limited')),
+            risk_score INT,
+            created_at TIMESTAMPTZ DEFAULT NOW()
+          );
+          CREATE INDEX IF NOT EXISTS fraud_events_type_idx ON fraud_events (event_type);
+          CREATE INDEX IF NOT EXISTS fraud_events_severity_idx ON fraud_events (severity);
+          CREATE INDEX IF NOT EXISTS fraud_events_user_idx ON fraud_events (user_id);
+          CREATE INDEX IF NOT EXISTS fraud_events_ip_idx ON fraud_events (ip_address);
+          CREATE INDEX IF NOT EXISTS fraud_events_created_idx ON fraud_events (created_at DESC);
+          CREATE INDEX IF NOT EXISTS fraud_events_type_severity_idx ON fraud_events (event_type, severity, created_at DESC);
+          ALTER TABLE fraud_events ENABLE ROW LEVEL SECURITY;
+        `,
+      });
+
+      if (createFraudErr) {
+        results.push({
+          step: "fraud_events table (via exec_sql RPC)",
+          status: "failed",
+          error: createFraudErr.message,
+        });
       } else {
-        results.push({ sql: sql.substring(0, 60), status: "ok" });
+        results.push({ step: "fraud_events table", status: "created" });
+      }
+    } else {
+      results.push({ step: "fraud_events table", status: "already exists" });
+    }
+
+    // ─── Migration 003: user_documents table ────────────────
+    const { error: docsCheck } = await supabase
+      .from("user_documents")
+      .select("id")
+      .limit(1);
+
+    if (docsCheck && docsCheck.message?.includes("does not exist")) {
+      const { error: createDocsErr } = await supabase.rpc("exec_sql", {
+        sql_query: `
+          CREATE TABLE IF NOT EXISTS user_documents (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+            file_name TEXT NOT NULL,
+            original_size_bytes INT,
+            chunk_count INT DEFAULT 0,
+            pii_types_found TEXT[] DEFAULT '{}',
+            pii_redaction_count INT DEFAULT 0,
+            status TEXT DEFAULT 'processing' CHECK (status IN ('processing', 'indexed', 'failed')),
+            created_at TIMESTAMPTZ DEFAULT NOW()
+          );
+          CREATE INDEX IF NOT EXISTS user_documents_user_idx ON user_documents (user_id);
+          CREATE INDEX IF NOT EXISTS user_documents_status_idx ON user_documents (status);
+          CREATE INDEX IF NOT EXISTS user_documents_created_idx ON user_documents (created_at DESC);
+          ALTER TABLE user_documents ENABLE ROW LEVEL SECURITY;
+          CREATE POLICY "Users can view own documents" ON user_documents FOR SELECT USING (auth.uid() = user_id);
+          CREATE POLICY "Users can insert own documents" ON user_documents FOR INSERT WITH CHECK (auth.uid() = user_id);
+          CREATE POLICY "Users can delete own documents" ON user_documents FOR DELETE USING (auth.uid() = user_id);
+        `,
+      });
+
+      if (createDocsErr) {
+        results.push({
+          step: "user_documents table (via exec_sql RPC)",
+          status: "failed",
+          error: createDocsErr.message,
+        });
+      } else {
+        results.push({ step: "user_documents table", status: "created" });
+      }
+    } else {
+      results.push({ step: "user_documents table", status: "already exists" });
+    }
+
+    // Check if any steps failed
+    const hasFails = results.some((r) => r.status === "failed");
+
+    // If RPC exec_sql doesn't exist, provide manual SQL
+    if (hasFails) {
+      const needsManualSQL = results.some(
+        (r) => r.error?.includes("function") || r.error?.includes("exec_sql")
+      );
+
+      if (needsManualSQL) {
+        return NextResponse.json({
+          success: false,
+          message:
+            "The exec_sql RPC function doesn't exist yet. You need to first create it in the Supabase SQL editor, then run this endpoint again.",
+          setupSQL: `-- Run this ONCE in Supabase SQL Editor to enable programmatic migrations:
+CREATE OR REPLACE FUNCTION exec_sql(sql_query TEXT)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  EXECUTE sql_query;
+END;
+$$;`,
+          results,
+        });
       }
     }
 
-    // Also recreate the match_documents and vector_search functions
-    // via individual RPC calls
-    const matchDocsFn = `
-CREATE OR REPLACE FUNCTION match_documents(
-  query_embedding vector(3072),
-  query_text TEXT,
-  filter_kb_type TEXT,
-  filter_metadata JSONB DEFAULT '{}',
-  match_count INT DEFAULT 5,
-  vector_weight FLOAT DEFAULT 0.7,
-  text_weight FLOAT DEFAULT 0.3
-)
-RETURNS TABLE (id UUID, content TEXT, metadata JSONB, similarity FLOAT)
-LANGUAGE plpgsql AS $$
-BEGIN
-  RETURN QUERY
-  WITH vector_results AS (
-    SELECT d.id, d.content, d.metadata,
-      1 - (d.embedding <=> query_embedding) AS vec_similarity
-    FROM documents d
-    WHERE d.kb_type = filter_kb_type
-      AND (filter_metadata = '{}'::JSONB OR d.metadata @> filter_metadata)
-    ORDER BY d.embedding <=> query_embedding
-    LIMIT match_count * 2
-  ),
-  text_results AS (
-    SELECT d.id, d.content, d.metadata,
-      ts_rank(d.fts, plainto_tsquery('english', query_text)) AS text_rank
-    FROM documents d
-    WHERE d.kb_type = filter_kb_type
-      AND d.fts @@ plainto_tsquery('english', query_text)
-      AND (filter_metadata = '{}'::JSONB OR d.metadata @> filter_metadata)
-    ORDER BY text_rank DESC
-    LIMIT match_count * 2
-  ),
-  combined AS (
-    SELECT COALESCE(v.id, t.id) AS id,
-      COALESCE(v.content, t.content) AS content,
-      COALESCE(v.metadata, t.metadata) AS metadata,
-      (COALESCE(v.vec_similarity, 0) * vector_weight +
-       COALESCE(t.text_rank, 0) * text_weight) AS combined_score
-    FROM vector_results v FULL OUTER JOIN text_results t ON v.id = t.id
-  )
-  SELECT combined.id, combined.content, combined.metadata,
-    combined.combined_score AS similarity
-  FROM combined ORDER BY combined_score DESC LIMIT match_count;
-END; $$;
-    `;
-
-    const vectorSearchFn = `
-CREATE OR REPLACE FUNCTION vector_search(
-  query_embedding vector(3072),
-  filter_kb_type TEXT,
-  match_count INT DEFAULT 5
-)
-RETURNS TABLE (id UUID, content TEXT, metadata JSONB, similarity FLOAT)
-LANGUAGE plpgsql AS $$
-BEGIN
-  RETURN QUERY
-  SELECT d.id, d.content, d.metadata,
-    (1 - (d.embedding <=> query_embedding))::FLOAT AS similarity
-  FROM documents d
-  WHERE d.kb_type = filter_kb_type
-  ORDER BY d.embedding <=> query_embedding
-  LIMIT match_count;
-END; $$;
-    `;
-
-    // Try to execute function updates via RPC
-    for (const fn of [matchDocsFn, vectorSearchFn]) {
-      const { error } = await supabase.rpc("exec_sql", { sql_query: fn });
-      if (error) {
-        results.push({ sql: fn.substring(0, 60).trim(), status: `rpc_error: ${error.message}` });
-      } else {
-        results.push({ sql: fn.substring(0, 60).trim(), status: "ok" });
-      }
-    }
-
-    return NextResponse.json({ success: true, results });
+    return NextResponse.json({
+      success: !hasFails,
+      message: hasFails
+        ? "Some migrations failed — see results."
+        : "All migrations applied successfully!",
+      results,
+    });
   } catch (error: any) {
+    console.error("Migration error:", error);
     return NextResponse.json(
-      { error: "Migration failed", details: error.message },
+      { error: error.message || "Migration failed" },
       { status: 500 }
     );
   }
+}
+
+// Allow GET for easy browser access
+export async function GET(request: NextRequest) {
+  return POST(request);
 }

@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
+import { PLANS, INTERVIEW_PACK_PRICE } from "@/lib/razorpay";
 import crypto from "crypto";
+import {
+  FraudShield,
+  getClientIP,
+  rateLimitResponse,
+  RATE_LIMITS,
+} from "@/lib/fraud-shield";
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIP(request);
+  const userAgent = request.headers.get("user-agent") || undefined;
+
   try {
     const body = await request.json();
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, itemType, packId } = body;
@@ -13,6 +23,48 @@ export async function POST(request: NextRequest) {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
       return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+    }
+
+    // ── FraudShield: Rate limit (10 verifications/min per user) ──
+    const rateCheck = FraudShield.checkRateLimit(
+      `payment:verify:${user.id}`,
+      RATE_LIMITS.paymentVerify
+    );
+    if (!rateCheck.allowed) {
+      FraudShield.logFraudEvent({
+        eventType: "rate_limit",
+        severity: "high",
+        userId: user.id,
+        ipAddress: ip,
+        userAgent,
+        route: "/api/payment/verify",
+        details: { hits: rateCheck.totalHits },
+        actionTaken: "rate_limited",
+        riskScore: 65,
+      });
+      return rateLimitResponse(rateCheck, "payment:verify");
+    }
+
+    // ── FraudShield: Payment ID replay detection ──
+    if (razorpay_payment_id && FraudShield.isPaymentIdUsed(razorpay_payment_id)) {
+      FraudShield.logFraudEvent({
+        eventType: "replay_attack",
+        severity: "critical",
+        userId: user.id,
+        ipAddress: ip,
+        userAgent,
+        route: "/api/payment/verify",
+        details: {
+          paymentId: razorpay_payment_id,
+          orderId: razorpay_order_id,
+        },
+        actionTaken: "blocked",
+        riskScore: 95,
+      });
+      return NextResponse.json(
+        { error: "This payment has already been processed." },
+        { status: 400 }
+      );
     }
 
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
@@ -30,10 +82,34 @@ export async function POST(request: NextRequest) {
         .digest("hex");
 
       if (generated_signature !== razorpay_signature) {
+        FraudShield.logFraudEvent({
+          eventType: "payment_fraud",
+          severity: "critical",
+          userId: user.id,
+          ipAddress: ip,
+          userAgent,
+          route: "/api/payment/verify",
+          details: {
+            orderId: razorpay_order_id,
+            paymentId: razorpay_payment_id,
+            reason: "Signature mismatch",
+          },
+          actionTaken: "blocked",
+          riskScore: 95,
+        });
         return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
       }
     } else {
       console.warn("Razorpay API key secret not configured. Bypassing verification in sandbox simulation.");
+    }
+
+    // ── FraudShield: Amount validation ──
+    const expectedAmount = itemType === "subscription" ? PLANS.premium.amount : INTERVIEW_PACK_PRICE;
+    // Amount validation is server-side — we use the expected amount, not client-provided
+
+    // ── FraudShield: Mark payment ID as used (idempotency) ──
+    if (razorpay_payment_id) {
+      FraudShield.markPaymentIdUsed(razorpay_payment_id);
     }
 
     // Update user profile tier and credits
@@ -85,7 +161,7 @@ export async function POST(request: NextRequest) {
       // Log purchase
       await supabase.from("user_purchases").insert({
         user_id: user.id,
-        amount: 9900, // ₹99
+        amount: expectedAmount,
         payment_id: razorpay_payment_id || `pay_mock_${Date.now()}`,
       });
     } else {

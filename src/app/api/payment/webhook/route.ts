@@ -1,17 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyWebhookSignature } from "@/lib/razorpay";
+import { verifyWebhookSignature, PLANS, INTERVIEW_PACK_PRICE } from "@/lib/razorpay";
 import { createServerSupabase } from "@/lib/supabase";
+import {
+  FraudShield,
+  getClientIP,
+} from "@/lib/fraud-shield";
+
+// Track processed webhook payment IDs to prevent replay
+const processedWebhookPaymentIds = new Set<string>();
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIP(request);
+
   try {
     const rawBody = await request.text();
     const signature = request.headers.get("x-razorpay-signature") || "";
 
     const verified = verifyWebhookSignature(rawBody, signature);
 
-    // If signature verification fails AND we are not in development/testing mode, return 400.
-    if (!verified && process.env.NODE_ENV === "production") {
-      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+    // ── FraudShield: Strict signature verification ──
+    // In production, always require valid signature. In dev, warn but allow.
+    if (!verified) {
+      if (process.env.NODE_ENV === "production") {
+        FraudShield.logFraudEvent({
+          eventType: "payment_fraud",
+          severity: "critical",
+          ipAddress: ip,
+          route: "/api/payment/webhook",
+          details: { reason: "Invalid webhook signature" },
+          actionTaken: "blocked",
+          riskScore: 95,
+        });
+        return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+      } else {
+        console.warn("[FraudShield] Webhook signature verification failed in dev mode — allowing for testing.");
+      }
     }
 
     const payload = JSON.parse(rawBody);
@@ -24,6 +47,57 @@ export async function POST(request: NextRequest) {
       const payment = payload.payload.payment.entity;
       const notes = payment.notes || {};
       const orderId = payment.order_id;
+      const paymentId = payment.id;
+
+      // ── FraudShield: Webhook replay/idempotency check ──
+      if (paymentId && processedWebhookPaymentIds.has(paymentId)) {
+        FraudShield.logFraudEvent({
+          eventType: "replay_attack",
+          severity: "high",
+          ipAddress: ip,
+          route: "/api/payment/webhook",
+          details: { paymentId, orderId, reason: "Duplicate webhook delivery" },
+          actionTaken: "blocked",
+          riskScore: 80,
+        });
+        // Return 200 to prevent Razorpay from retrying (idempotent response)
+        return NextResponse.json({ success: true, duplicate: true });
+      }
+
+      // ── FraudShield: Amount validation ──
+      const paymentAmount = payment.amount;
+      const validAmounts = [PLANS.premium.amount, INTERVIEW_PACK_PRICE];
+      if (!validAmounts.includes(paymentAmount)) {
+        FraudShield.logFraudEvent({
+          eventType: "amount_tamper",
+          severity: "critical",
+          ipAddress: ip,
+          route: "/api/payment/webhook",
+          details: {
+            paymentId,
+            orderId,
+            receivedAmount: paymentAmount,
+            validAmounts,
+          },
+          actionTaken: "blocked",
+          riskScore: 90,
+        });
+        return NextResponse.json(
+          { error: "Payment amount does not match any known plan" },
+          { status: 400 }
+        );
+      }
+
+      // Mark as processed
+      if (paymentId) {
+        processedWebhookPaymentIds.add(paymentId);
+        FraudShield.markPaymentIdUsed(paymentId);
+        // Evict old entries to prevent unbounded growth (keep last 1000)
+        if (processedWebhookPaymentIds.size > 1000) {
+          const firstKey = processedWebhookPaymentIds.values().next().value;
+          if (firstKey) processedWebhookPaymentIds.delete(firstKey);
+        }
+      }
       
       // Determine user ID (should be passed in notes or retrieved from transaction history)
       const userId = notes.userId || notes.user_id;

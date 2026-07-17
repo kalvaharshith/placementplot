@@ -6,19 +6,67 @@ import {
   buildInterviewerSystemPrompt,
   buildInterviewEvaluationPrompt,
 } from "@/features/interview/prompts";
+import {
+  FraudShield,
+  getClientIP,
+  rateLimitResponse,
+  fraudBlockedResponse,
+  RATE_LIMITS,
+} from "@/lib/fraud-shield";
 
 // ─── POST /api/interview ───────────────────────────────────────
 // Handles both starting a new interview and sending messages.
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIP(request);
+  const userAgent = request.headers.get("user-agent") || undefined;
+
   try {
     const body = await request.json();
     const { action } = body;
 
     if (action === "start") {
-      return handleStartInterviewStream(body);
+      // ── FraudShield: Rate limit interview starts (3/10min per IP) ──
+      const rateCheck = FraudShield.checkRateLimit(
+        `interview:start:${ip}`,
+        RATE_LIMITS.interviewStart
+      );
+      if (!rateCheck.allowed) {
+        FraudShield.logFraudEvent({
+          eventType: "rate_limit",
+          severity: "medium",
+          ipAddress: ip,
+          userAgent,
+          route: "/api/interview",
+          details: { action: "start", hits: rateCheck.totalHits },
+          actionTaken: "rate_limited",
+          riskScore: 50,
+        });
+        return rateLimitResponse(rateCheck, "interview:start");
+      }
+
+      return handleStartInterviewStream(body, ip, userAgent);
     } else if (action === "message") {
-      return handleMessageStream(body);
+      // ── FraudShield: Rate limit messages (20/10min per IP) ──
+      const rateCheck = FraudShield.checkRateLimit(
+        `interview:message:${ip}`,
+        RATE_LIMITS.interviewMessage
+      );
+      if (!rateCheck.allowed) {
+        FraudShield.logFraudEvent({
+          eventType: "rate_limit",
+          severity: "medium",
+          ipAddress: ip,
+          userAgent,
+          route: "/api/interview",
+          details: { action: "message", hits: rateCheck.totalHits },
+          actionTaken: "rate_limited",
+          riskScore: 45,
+        });
+        return rateLimitResponse(rateCheck, "interview:message");
+      }
+
+      return handleMessageStream(body, ip, userAgent);
     } else if (action === "evaluate") {
       return handleEvaluate(body);
     }
@@ -35,13 +83,25 @@ export async function POST(request: NextRequest) {
 
 // ─── Start Interview Stream ────────────────────────────────────
 
-async function handleStartInterviewStream(body: {
-  company: string;
-  role: string;
-  round: string;
-  difficulty: string;
-}) {
+async function handleStartInterviewStream(
+  body: {
+    company: string;
+    role: string;
+    round: string;
+    difficulty: string;
+  },
+  ip: string,
+  userAgent?: string
+) {
   const { company, role, round, difficulty } = body;
+
+  // ── FraudShield: Validate input lengths ──
+  if (company.length > 100 || role.length > 100 || round.length > 100) {
+    return NextResponse.json(
+      { error: "Input values are too long." },
+      { status: 400 }
+    );
+  }
 
   // ── RAG: Retrieve real questions from KB3 ──
   let retrievedQuestions = "Use general interview questions appropriate for this company and round.";
@@ -135,16 +195,61 @@ async function handleStartInterviewStream(body: {
 
 // ─── Send Message Stream ───────────────────────────────────────
 
-async function handleMessageStream(body: {
-  systemPrompt: string;
-  history: { role: "user" | "model"; parts: { text: string }[] }[];
-  message: string;
-}) {
+async function handleMessageStream(
+  body: {
+    systemPrompt: string;
+    history: { role: "user" | "model"; parts: { text: string }[] }[];
+    message: string;
+  },
+  ip: string,
+  userAgent?: string
+) {
   const { systemPrompt, history, message } = body;
 
   if (!systemPrompt || systemPrompt.trim().length === 0) {
     return new Response(
       "[ERROR] Interview session context was lost. Please start a new interview.",
+      {
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+      }
+    );
+  }
+
+  // ── FraudShield: Validate message length (max 5000 chars) ──
+  if (message.length > 5000) {
+    return new Response(
+      "[ERROR] Message is too long. Please keep your response under 5000 characters.",
+      {
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+      }
+    );
+  }
+
+  // ── FraudShield: Check for prompt injection ──
+  const abuseCheck = FraudShield.checkAIAbuse({
+    ipAddress: ip,
+    route: "/api/interview",
+    inputText: message,
+    userAgent,
+  });
+
+  if (!abuseCheck.allowed) {
+    FraudShield.logFraudEvent({
+      eventType: "prompt_injection",
+      severity: "high",
+      ipAddress: ip,
+      userAgent,
+      route: "/api/interview",
+      details: {
+        action: "message",
+        signals: abuseCheck.signals,
+        messagePreview: message.substring(0, 200),
+      },
+      actionTaken: "blocked",
+      riskScore: abuseCheck.riskScore,
+    });
+    return new Response(
+      "[ERROR] Your message was flagged by our security system. Please rephrase your response.",
       {
         headers: { "Content-Type": "text/plain; charset=utf-8" },
       }

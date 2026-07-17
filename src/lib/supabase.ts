@@ -35,7 +35,8 @@ export type KBType =
   | "resume_examples"
   | "interview_bank"
   | "company_profiles"
-  | "learning_resources";
+  | "learning_resources"
+  | "user_documents";
 
 export interface DocumentRow {
   id: string;

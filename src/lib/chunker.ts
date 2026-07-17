@@ -189,3 +189,38 @@ export function chunkCompanyProfile(
     },
   }));
 }
+
+// ─── Document Q&A Chunking (DocuComply) ────────────────────────
+
+/**
+ * Chunk a document for DocuComply Q&A.
+ * Uses recursive splitting with larger chunks (500 chars, 75 overlap)
+ * optimized for document paragraph retrieval.
+ * Each chunk is tagged with user_id and file context for scoped search.
+ */
+export function chunkDocument(
+  text: string,
+  metadata: { fileName: string; userId: string; documentId?: string; [key: string]: unknown }
+): Chunk[] {
+  const { fileName, userId, documentId, ...extraMeta } = metadata;
+
+  // Use recursive chunking with larger sizes for document paragraphs
+  const rawChunks = chunkRecursive(text, 500, 75, {
+    chunk_type: "user_document",
+    user_id: userId,
+    file_name: fileName,
+    document_id: documentId || undefined,
+    ...extraMeta,
+  });
+
+  // Prepend file context to each chunk for better retrieval
+  return rawChunks.map((chunk, i) => ({
+    ...chunk,
+    content: `[Document: ${fileName}]\n\n${chunk.content}`,
+    metadata: {
+      ...chunk.metadata,
+      chunk_index: i,
+      total_chunks: rawChunks.length,
+    },
+  }));
+}

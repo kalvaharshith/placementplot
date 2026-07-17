@@ -2,8 +2,42 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateJSON } from "@/lib/ai";
 import { retrieveAndAugment } from "@/lib/rag";
 import { buildRoadmapPrompt, buildSkillGapPrompt } from "@/features/roadmap/prompts";
+import {
+  FraudShield,
+  getClientIP,
+  rateLimitResponse,
+  RATE_LIMITS,
+} from "@/lib/fraud-shield";
+
+// ─── Constants ─────────────────────────────────────────────────
+
+const MAX_TARGET_COMPANIES = 5;
+const MAX_COMPANY_NAME_LENGTH = 100;
+const MAX_RESUME_TEXT_LENGTH = 50_000;
 
 export async function POST(request: NextRequest) {
+  const ip = getClientIP(request);
+  const userAgent = request.headers.get("user-agent") || undefined;
+
+  // ── FraudShield: Rate limit (3 roadmaps/30min per IP) ──
+  const rateCheck = FraudShield.checkRateLimit(
+    `roadmap:generate:${ip}`,
+    RATE_LIMITS.roadmapGenerate
+  );
+  if (!rateCheck.allowed) {
+    FraudShield.logFraudEvent({
+      eventType: "rate_limit",
+      severity: "medium",
+      ipAddress: ip,
+      userAgent,
+      route: "/api/roadmap/generate",
+      details: { hits: rateCheck.totalHits },
+      actionTaken: "rate_limited",
+      riskScore: 50,
+    });
+    return rateLimitResponse(rateCheck, "roadmap:generate");
+  }
+
   try {
     const body = await request.json();
     const { skillLevel, availableHours, timelineMonths, targetCompanies, resumeText } = body;
@@ -12,6 +46,60 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "Please provide at least one target company." },
         { status: 400 }
+      );
+    }
+
+    // ── FraudShield: Validate target companies array ──
+    if (targetCompanies.length > MAX_TARGET_COMPANIES) {
+      return NextResponse.json(
+        { error: `Too many target companies (max ${MAX_TARGET_COMPANIES}).` },
+        { status: 400 }
+      );
+    }
+
+    for (const company of targetCompanies) {
+      if (typeof company !== "string" || company.length > MAX_COMPANY_NAME_LENGTH) {
+        return NextResponse.json(
+          { error: "Invalid company name format." },
+          { status: 400 }
+        );
+      }
+    }
+
+    // ── FraudShield: Validate resume text length if provided ──
+    if (resumeText && resumeText.length > MAX_RESUME_TEXT_LENGTH) {
+      return NextResponse.json(
+        { error: "Resume text is too long. Please provide a shorter version." },
+        { status: 400 }
+      );
+    }
+
+    // ── FraudShield: AI abuse check on inputs ──
+    const combinedInput = `${targetCompanies.join(" ")} ${skillLevel || ""} ${resumeText || ""}`;
+    const abuseCheck = FraudShield.checkAIAbuse({
+      ipAddress: ip,
+      route: "/api/roadmap/generate",
+      inputText: combinedInput,
+      userAgent,
+    });
+
+    if (!abuseCheck.allowed) {
+      FraudShield.logFraudEvent({
+        eventType: "ai_abuse",
+        severity: "high",
+        ipAddress: ip,
+        userAgent,
+        route: "/api/roadmap/generate",
+        details: {
+          signals: abuseCheck.signals,
+          targetCompanies,
+        },
+        actionTaken: "blocked",
+        riskScore: abuseCheck.riskScore,
+      });
+      return NextResponse.json(
+        { error: "Your request was flagged by our security system. Please try again with valid inputs." },
+        { status: 403 }
       );
     }
 

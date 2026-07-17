@@ -92,6 +92,7 @@ const navItems = [
   { label: "Mock Interviews", href: "/dashboard/interview", icon: <ChatBubbleIcon /> },
   { label: "Companies", href: "/dashboard/companies", icon: <BuildingIcon /> },
   { label: "My Roadmap", href: "/dashboard/roadmap", icon: <MapIcon /> },
+  { label: "DocuComply", href: "/dashboard/docucomply", icon: <ShieldIcon /> },
   { label: "Billing", href: "/dashboard/billing", icon: <CreditCardIcon /> },
   { label: "Settings", href: "/dashboard/settings", icon: <SettingsIcon /> },
 ];
